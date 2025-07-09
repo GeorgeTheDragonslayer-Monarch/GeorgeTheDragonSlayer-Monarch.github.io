@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authors - Dreams Uncharted</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="assets/js/auth.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/dreams.png" alt="Dreams Uncharted Logo" class="logo-image">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="comics.html">Comics</a></li>
+                    <li><a href="novels.html">Novels</a></li>
+                    <li><a href="artists.html">Artists</a></li>
+                    <li><a href="authors.html" class="active">Authors</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <form action="search.html" method="get">
+                    <input type="text" name="query" placeholder="Search...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="user-nav">
+                <a href="login.html" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="content-section">
+            <div class="container">
+                <h1 class="section-title">All Authors</h1>
+                <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem;">
+                    <div class="content-card creator-card" onclick="location.href='creator.html?id=1'" style="cursor:pointer;">
+                        <div class="card-image" style="height:120px;width:120px;margin:0 auto;overflow:hidden;border-radius:50%;background:#eee;">
+                            <img src="assets/images/placeholder-10.jpg" alt="Samira Lee" style="object-fit:cover;width:100%;height:100%;">
+                        </div>
+                        <div class="card-info" style="text-align:center;">
+                            <h3>Samira Lee</h3>
+                            <p class="author">Web Novelist</p>
+                            <p class="bio" style="font-size:0.95em;color:#666;">Writes epic adventures and heartfelt drama. Author of 'Moonlit Path'.</p>
+                            <div class="works-list" style="margin-top:8px;font-size:0.9em;color:#444;">
+                                <strong>Works:</strong> Moonlit Path, The Last Ember
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-card creator-card" onclick="location.href='creator.html?id=2'" style="cursor:pointer;">
+                        <div class="card-image" style="height:120px;width:120px;margin:0 auto;overflow:hidden;border-radius:50%;background:#eee;">
+                            <img src="assets/images/placeholder-11.jpg" alt="Brian Chen" style="object-fit:cover;width:100%;height:100%;">
+                        </div>
+                        <div class="card-info" style="text-align:center;">
+                            <h3>Brian Chen</h3>
+                            <p class="author">Fantasy Author</p>
+                            <p class="bio" style="font-size:0.95em;color:#666;">Explores magic and mystery. Author of 'Shadowbound'.</p>
+                            <div class="works-list" style="margin-top:8px;font-size:0.9em;color:#444;">
+                                <strong>Works:</strong> Shadowbound, The Forgotten City
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add more author cards as needed -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Dreams Uncharted</h2>
+                </div>
+                <div class="footer-links">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="comics.html">Comics</a></li>
+                        <li><a href="novels.html">Novels</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="copyright.html">Copyright</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter</p>
+                    <form>
+                        <input type="email" placeholder="Your email">
+                        <button type="submit" class="btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Dreams Uncharted LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

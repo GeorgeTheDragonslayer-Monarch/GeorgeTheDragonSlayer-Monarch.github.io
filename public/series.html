@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Series Title - Dreams Uncharted</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="assets/js/auth.js"></script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">Dreams Uncharted</a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="comics.html">Comics</a></li>
+                    <li><a href="novels.html">Novels</a></li>
+                </ul>
+            </nav>
+            <div class="search-bar">
+                <form action="search.html" method="get">
+                    <input type="text" name="query" placeholder="Search...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="user-nav">
+                <a href="login.html" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="series-page">
+        <div class="container">
+            <div class="series-banner">
+                <img src="assets/images/series-banner.jpg" alt="Series Banner">
+            </div>
+            
+            <div class="series-info">
+                <h1 class="series-title">Mystic Chronicles</h1>
+                <p class="series-author">By <a href="creator.html">Author Name</a></p>
+                
+                <div class="series-actions">
+                    <button class="btn btn-subscribe">Subscribe</button>
+                    <button class="btn btn-bookmark">Bookmark</button>
+                    <button class="btn btn-like">Like</button>
+                    <button class="btn btn-share">Share</button>
+                </div>
+                
+                <div class="series-description">
+                    <h2>Description</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                    <p>Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget aliquam nisl nisl eget nisl.</p>
+                </div>
+                
+                <div class="series-details">
+                    <h2>Details</h2>
+                    <ul>
+                        <li><strong>Genre:</strong> Fantasy, Action</li>
+                        <li><strong>Status:</strong> Ongoing</li>
+                        <li><strong>Rating:</strong> Teen</li>
+                        <li><strong>Last Updated:</strong> June 15, 2025</li>
+                    </ul>
+                </div>
+                
+                <div class="funding-goal">
+                    <h2>Funding Goal Progress</h2>
+                    <div class="progress-bar">
+                        <div class="progress" style="width: 65%;"></div>
+                    </div>
+                    <p class="progress-info">$650 of $1000</p>
+                    <button class="btn btn-donate">Donate</button>
+                </div>
+            </div>
+            
+            <div class="series-chapters">
+                <h2>Chapters/Issues</h2>
+                <div class="chapter-list">
+                    <div class="chapter-item">
+                        <h3>#1 - The Beginning</h3>
+                        <p class="publish-date">Published: June 1, 2025</p>
+                        <a href="reader.html?chapter=1" class="btn btn-read">Read</a>
+                    </div>
+                    <div class="chapter-item">
+                        <h3>#2 - New Horizons</h3>
+                        <p class="publish-date">Published: June 7, 2025</p>
+                        <a href="reader.html?chapter=2" class="btn btn-read">Read</a>
+                    </div>
+                    <div class="chapter-item">
+                        <h3>#3 - Unexpected Ally</h3>
+                        <p class="publish-date">Published: June 14, 2025</p>
+                        <a href="reader.html?chapter=3" class="btn btn-read">Read</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="series-comments">
+                <h2>Comments</h2>
+                <div class="comment-form">
+                    <textarea placeholder="Write a comment..."></textarea>
+                    <button class="btn btn-submit">Submit</button>
+                </div>
+                
+                <div class="comment-list">
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            <img src="assets/images/avatar-1.jpg" alt="User Avatar">
+                        </div>
+                        <div class="comment-content">
+                            <h4 class="comment-author">Username</h4>
+                            <p class="comment-date">June 15, 2025</p>
+                            <p class="comment-text">This series is amazing! Can't wait for the next chapter.</p>
+                            <div class="comment-actions">
+                                <button class="btn-reply">Reply</button>
+                                <button class="btn-like">Like</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="comment-item">
+                        <div class="comment-avatar">
+                            <img src="assets/images/avatar-2.jpg" alt="User Avatar">
+                        </div>
+                        <div class="comment-content">
+                            <h4 class="comment-author">Username</h4>
+                            <p class="comment-date">June 14, 2025</p>
+                            <p class="comment-text">The artwork is incredible, especially in chapter 2!</p>
+                            <div class="comment-actions">
+                                <button class="btn-reply">Reply</button>
+                                <button class="btn-like">Like</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Dreams Uncharted</h2>
+                </div>
+                <div class="footer-links">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="comics.html">Comics</a></li>
+                        <li><a href="novels.html">Novels</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="copyright.html">Copyright</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter</p>
+                    <form>
+                        <input type="email" placeholder="Your email">
+                        <button type="submit" class="btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Dreams Uncharted. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

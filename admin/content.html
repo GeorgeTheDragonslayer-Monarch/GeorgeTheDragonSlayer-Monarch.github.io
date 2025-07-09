@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Management - Dreams Uncharted</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;500;700&family=Roboto+Mono&display=swap">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <script src="assets/js/auth.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-logo">Dreams Uncharted</h1>
+                <p class="sidebar-subtitle">Admin Dashboard</p>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="index.html" class="sidebar-link">
+                            <span class="sidebar-icon">📊</span>
+                            <span class="sidebar-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item active">
+                        <a href="content.html" class="sidebar-link">
+                            <span class="sidebar-icon">📚</span>
+                            <span class="sidebar-text">Content</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="editor.html" class="sidebar-link">
+                            <span class="sidebar-icon">✏️</span>
+                            <span class="sidebar-text">Block Editor</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="comments.html" class="sidebar-link">
+                            <span class="sidebar-icon">💬</span>
+                            <span class="sidebar-text">Comments</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="users.html" class="sidebar-link">
+                            <span class="sidebar-icon">👥</span>
+                            <span class="sidebar-text">Users</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="analytics.html" class="sidebar-link">
+                            <span class="sidebar-icon">📈</span>
+                            <span class="sidebar-text">Analytics</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="settings.html" class="sidebar-link">
+                            <span class="sidebar-icon">⚙️</span>
+                            <span class="sidebar-text">Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="../public/index.html" class="sidebar-link" target="_blank">
+                    <span class="sidebar-icon">🌐</span>
+                    <span class="sidebar-text">View Site</span>
+                </a>
+                <a href="#" class="sidebar-link logout-link">
+                    <span class="sidebar-icon">🚪</span>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <span class="menu-icon">☰</span>
+                    </button>
+                    <h2 class="page-title">Content Management</h2>
+                </div>
+                <div class="header-right">
+                    <a href="editor.html" class="btn btn-primary">Create New</a>
+                    <div class="user-info">
+                        <img src="assets/images/admin-avatar.svg" alt="Admin User" class="user-avatar">
+                        <span class="user-name">Admin User</span>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Content Management -->
+            <div class="content-management">
+                <!-- Filters and Search -->
+                <div class="content-filters">
+                    <div class="filter-group">
+                        <label for="content-type-filter" class="filter-label">Type</label>
+                        <select id="content-type-filter" class="filter-control">
+                            <option value="all">All Types</option>
+                            <option value="comic">Comics</option>
+                            <option value="novel">Novels</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="content-status-filter" class="filter-label">Status</label>
+                        <select id="content-status-filter" class="filter-control">
+                            <option value="all">All Status</option>
+                            <option value="published">Published</option>
+                            <option value="draft">Draft</option>
+                            <option value="scheduled">Scheduled</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="content-genre-filter" class="filter-label">Genre</label>
+                        <select id="content-genre-filter" class="filter-control">
+                            <option value="all">All Genres</option>
+                            <option value="fantasy">Fantasy</option>
+                            <option value="sci-fi">Sci-Fi</option>
+                            <option value="romance">Romance</option>
+                            <option value="action">Action</option>
+                            <option value="horror">Horror</option>
+                            <option value="mystery">Mystery</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <input type="text" placeholder="Search content..." class="search-control">
+                        <button class="search-btn">🔍</button>
+                    </div>
+                </div>
+                
+                <!-- Content Table -->
+                <div class="content-table-wrapper">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-cell">
+                                    <input type="checkbox" id="select-all">
+                                </th>
+                                <th class="thumbnail-cell">Thumbnail</th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Author</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                                <th>Views</th>
+                                <th class="actions-cell">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample content rows -->
+                            <tr>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="content-checkbox">
+                                </td>
+                                <td class="thumbnail-cell">
+                                    <img src="../public/assets/images/placeholder-1.jpg" alt="Content Thumbnail" class="content-thumbnail">
+                                </td>
+                                <td>
+                                    <a href="editor.html?id=1" class="content-title-link">The Last Guardian</a>
+                                    <span class="content-subtitle">Chapter 12: The Confrontation</span>
+                                </td>
+                                <td>Comic</td>
+                                <td>Sarah Johnson</td>
+                                <td><span class="status-badge published">Published</span></td>
+                                <td>June 15, 2025</td>
+                                <td>124K</td>
+                                <td class="actions-cell">
+                                    <div class="table-actions">
+                                        <button class="table-action" title="Edit">✏️</button>
+                                        <button class="table-action" title="View">👁️</button>
+                                        <button class="table-action" title="Delete">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="content-checkbox">
+                                </td>
+                                <td class="thumbnail-cell">
+                                    <img src="../public/assets/images/placeholder-15.jpg" alt="Content Thumbnail" class="content-thumbnail">
+                                </td>
+                                <td>
+                                    <a href="editor.html?id=2" class="content-title-link">Whispers of Magic</a>
+                                    <span class="content-subtitle">Chapter 8: The Ancient Spell</span>
+                                </td>
+                                <td>Novel</td>
+                                <td>Sarah Johnson</td>
+                                <td><span class="status-badge draft">Draft</span></td>
+                                <td>June 10, 2025</td>
+                                <td>98K</td>
+                                <td class="actions-cell">
+                                    <div class="table-actions">
+                                        <button class="table-action" title="Edit">✏️</button>
+                                        <button class="table-action" title="View">👁️</button>
+                                        <button class="table-action" title="Delete">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="content-checkbox">
+                                </td>
+                                <td class="thumbnail-cell">
+                                    <img src="../public/assets/images/placeholder-5.jpg" alt="Content Thumbnail" class="content-thumbnail">
+                                </td>
+                                <td>
+                                    <a href="editor.html?id=3" class="content-title-link">Dragon Hunters</a>
+                                    <span class="content-subtitle">Chapter 5: The Mountain Pass</span>
+                                </td>
+                                <td>Comic</td>
+                                <td>Alex Rodriguez</td>
+                                <td><span class="status-badge scheduled">Scheduled</span></td>
+                                <td>June 20, 2025</td>
+                                <td>87K</td>
+                                <td class="actions-cell">
+                                    <div class="table-actions">
+                                        <button class="table-action" title="Edit">✏️</button>
+                                        <button class="table-action" title="View">👁️</button>
+                                        <button class="table-action" title="Delete">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="content-checkbox">
+                                </td>
+                                <td class="thumbnail-cell">
+                                    <img src="../public/assets/images/placeholder-6.jpg" alt="Content Thumbnail" class="content-thumbnail">
+                                </td>
+                                <td>
+                                    <a href="editor.html?id=4" class="content-title-link">City of Dreams</a>
+                                    <span class="content-subtitle">Chapter 3: The Hidden Path</span>
+                                </td>
+                                <td>Comic</td>
+                                <td>Olivia Kim</td>
+                                <td><span class="status-badge published">Published</span></td>
+                                <td>June 8, 2025</td>
+                                <td>76K</td>
+                                <td class="actions-cell">
+                                    <div class="table-actions">
+                                        <button class="table-action" title="Edit">✏️</button>
+                                        <button class="table-action" title="View">👁️</button>
+                                        <button class="table-action" title="Delete">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="checkbox-cell">
+                                    <input type="checkbox" class="content-checkbox">
+                                </td>
+                                <td class="thumbnail-cell">
+                                    <img src="../public/assets/images/placeholder-9.jpg" alt="Content Thumbnail" class="content-thumbnail">
+                                </td>
+                                <td>
+                                    <a href="editor.html?id=5" class="content-title-link">Mystic Academy</a>
+                                    <span class="content-subtitle">Chapter 1: New Beginnings</span>
+                                </td>
+                                <td>Novel</td>
+                                <td>James Wilson</td>
+                                <td><span class="status-badge published">Published</span></td>
+                                <td>June 5, 2025</td>
+                                <td>65K</td>
+                                <td class="actions-cell">
+                                    <div class="table-actions">
+                                        <button class="table-action" title="Edit">✏️</button>
+                                        <button class="table-action" title="View">👁️</button>
+                                        <button class="table-action" title="Delete">🗑️</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button class="pagination-btn" disabled>Previous</button>
+                    <div class="pagination-pages">
+                        <button class="pagination-page active">1</button>
+                        <button class="pagination-page">2</button>
+                        <button class="pagination-page">3</button>
+                        <span class="pagination-ellipsis">...</span>
+                        <button class="pagination-page">10</button>
+                    </div>
+                    <button class="pagination-btn">Next</button>
+                </div>
+                
+                <!-- Bulk Actions -->
+                <div class="bulk-actions">
+                    <select class="bulk-action-select">
+                        <option value="">Bulk Actions</option>
+                        <option value="publish">Publish</option>
+                        <option value="unpublish">Unpublish</option>
+                        <option value="delete">Delete</option>
+                    </select>
+                    <button class="btn btn-secondary apply-bulk-btn">Apply</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="assets/js/admin.js"></script>
+    <script src="assets/js/content.js"></script>
+</body>
+</html>

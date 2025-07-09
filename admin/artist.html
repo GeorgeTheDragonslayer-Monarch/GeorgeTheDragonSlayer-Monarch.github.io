@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artist Admin - Dreams Uncharted</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/admin.css">
+    <style>
+        .artist-header { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; }
+        .artist-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--secondary); }
+        .upload-section { margin: 40px 0; }
+        .art-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 24px;
+            justify-content: center;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .art-card {
+            width: 180px;
+            background: var(--surface);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            position: relative;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .art-card img { width: 100%; display: block; cursor: pointer; }
+        .art-card-actions { display: flex; gap: 8px; justify-content: center; margin: 8px 0; }
+        .art-action-btn { background: var(--secondary,#6c69a1); color: #fff; border: none; border-radius: 6px; padding: 4px 12px; font-size: 0.95em; cursor: pointer; transition: background 0.2s; }
+        .art-action-btn.hide { background: #e0a800; }
+        .art-action-btn.remove { background: #c9142a; }
+        .art-action-btn.edit { background: #183066; }
+        .art-action-btn:hover { opacity: 0.85; }
+        /* Modal styles */
+        .admin-art-modal { display:none; position:fixed; z-index:3000; top:0; left:0; width:100vw; height:100vh; background:rgba(24,48,102,0.92); align-items:center; justify-content:center; }
+        .admin-art-modal-content { background:#fff; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.22); padding:32px 32px 24px 32px; max-width:90vw; max-height:90vh; display:flex; flex-direction:column; align-items:center; position:relative; }
+        .admin-art-modal img { max-width:70vw; max-height:60vh; border-radius:12px; margin-bottom:18px; }
+        .admin-art-modal .close { position:absolute; top:18px; right:24px; font-size:2em; color:#222; cursor:pointer; font-weight:bold; }
+        .admin-art-modal .modal-actions { display:flex; gap:16px; margin-top:18px; }
+    </style>
+    <script src="assets/js/auth.js"></script>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="container">
+            <h1>Artist Admin Panel</h1>
+            <nav>
+                <a href="index.html">Dashboard</a>
+                <a href="artist.html" class="active">My Art</a>
+                <!-- Add more admin links as needed -->
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <section class="artist-header">
+                <img src="../public/assets/images/artist-avatar-placeholder.png" alt="Artist Avatar" class="artist-avatar">
+                <div class="artist-info">
+                    <h2>Jane Doe</h2>
+                    <p>Manage your profile and upload new artwork here.</p>
+                </div>
+            </section>
+            <section class="upload-section">
+                <h3>Upload New Artwork</h3>
+                <form id="uploadForm">
+                    <input type="file" id="artUpload" accept="image/*" required>
+                    <button type="submit" class="btn">Upload</button>
+                </form>
+            </section>
+            <section class="art-gallery" id="artGallery">
+                <!-- Uploaded art will appear here -->
+            </section>
+        </div>
+    </main>
+    <div class="admin-art-modal" id="adminArtModal">
+        <div class="admin-art-modal-content">
+            <span class="close" id="closeAdminArtModal">&times;</span>
+            <img id="modalAdminArtImg" src="" alt="Full Artwork">
+            <div style="width:100%;max-width:500px;margin-bottom:10px;">
+                <label style="font-weight:600;">Description:</label>
+                <textarea id="modalAdminArtDesc" style="width:100%;min-height:60px;margin-top:6px;border-radius:8px;border:1px solid #ccc;padding:8px 10px;font-size:1em;"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="art-action-btn hide" id="modalHideBtn"></button>
+                <button class="art-action-btn remove" id="modalRemoveBtn">Remove</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    // Store art in localStorage for demo
+    function getArtList() {
+        return JSON.parse(localStorage.getItem('artistArtList')||'[]');
+    }
+    function setArtList(list) {
+        localStorage.setItem('artistArtList', JSON.stringify(list));
+    }
+    function renderGallery() {
+        const gallery = document.getElementById('artGallery');
+        gallery.innerHTML = '';
+        const artList = getArtList();
+        if (!artList.length) {
+            gallery.innerHTML = '<em>No art uploaded yet.</em>';
+            return;
+        }
+        // Centered rows, 5 per row
+        let row = null;
+        artList.forEach((art, idx) => {
+            if (idx % 5 === 0) {
+                row = document.createElement('div');
+                row.style.display = 'flex';
+                row.style.justifyContent = 'center';
+                row.style.marginBottom = '20px';
+                gallery.appendChild(row);
+            }
+            const card = document.createElement('div');
+            card.className = 'art-card';
+            card.innerHTML = `<img src="${art.url}" alt="Artwork ${idx+1}" data-idx="${idx}">`;
+            if (art.hidden) card.style.opacity = '0.5';
+            row.appendChild(card);
+        });
+    }
+    renderGallery();
+    document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const fileInput = document.getElementById('artUpload');
+        if (fileInput.files && fileInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                // Prompt for description
+                const desc = prompt('Enter a description for this artwork:') || '';
+                const artList = getArtList();
+                artList.unshift({ url: ev.target.result, hidden: false, desc });
+                setArtList(artList);
+                renderGallery();
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+        fileInput.value = '';
+    });
+    // Modal logic for full art view and editing
+    const adminArtModal = document.getElementById('adminArtModal');
+    const modalAdminArtImg = document.getElementById('modalAdminArtImg');
+    const modalAdminArtDesc = document.getElementById('modalAdminArtDesc');
+    const modalHideBtn = document.getElementById('modalHideBtn');
+    const modalRemoveBtn = document.getElementById('modalRemoveBtn');
+    const closeAdminArtModal = document.getElementById('closeAdminArtModal');
+    let modalArtIdx = null;
+    document.getElementById('artGallery').addEventListener('click', function(e) {
+        const idx = +e.target.getAttribute('data-idx');
+        if (e.target.tagName === 'IMG') {
+            // Open modal for full view and edit
+            const artList = getArtList();
+            modalArtIdx = idx;
+            modalAdminArtImg.src = artList[idx].url;
+            modalAdminArtDesc.value = artList[idx].desc || '';
+            modalHideBtn.textContent = artList[idx].hidden ? 'Unhide' : 'Hide';
+            adminArtModal.style.display = 'flex';
+        } else if (e.target.classList.contains('remove')) {
+            if (confirm('Are you sure you want to permanently delete this artwork?')) {
+                const artList = getArtList();
+                artList.splice(idx, 1);
+                setArtList(artList);
+                renderGallery();
+            }
+        } else if (e.target.classList.contains('hide')) {
+            const artList = getArtList();
+            artList[idx].hidden = !artList[idx].hidden;
+            setArtList(artList);
+            renderGallery();
+        } else if (e.target.classList.contains('edit')) {
+            // Open modal for editing description
+            const artList = getArtList();
+            modalArtIdx = idx;
+            modalAdminArtImg.src = artList[idx].url;
+            modalAdminArtDesc.value = artList[idx].desc || '';
+            modalHideBtn.textContent = artList[idx].hidden ? 'Unhide' : 'Hide';
+            adminArtModal.style.display = 'flex';
+        }
+    });
+    closeAdminArtModal.onclick = function() {
+        adminArtModal.style.display = 'none';
+    };
+    modalHideBtn.onclick = function() {
+        if (modalArtIdx !== null) {
+            const artList = getArtList();
+            artList[modalArtIdx].hidden = !artList[modalArtIdx].hidden;
+            setArtList(artList);
+            renderGallery();
+            modalHideBtn.textContent = artList[modalArtIdx].hidden ? 'Unhide' : 'Hide';
+        }
+    };
+    modalRemoveBtn.onclick = function() {
+        if (modalArtIdx !== null) {
+            if (confirm('Are you sure you want to permanently delete this artwork?')) {
+                const artList = getArtList();
+                artList.splice(modalArtIdx, 1);
+                setArtList(artList);
+                renderGallery();
+                adminArtModal.style.display = 'none';
+            }
+        }
+    };
+    modalAdminArtDesc.onchange = function() {
+        if (modalArtIdx !== null) {
+            const artList = getArtList();
+            artList[modalArtIdx].desc = modalAdminArtDesc.value;
+            setArtList(artList);
+            renderGallery();
+        }
+    };
+    </script>
+</body>
+</html>
