@@ -59,6 +59,10 @@
     box-sizing: border-box;
 }
 
+.text-custom {
+  color: #FFFFFF; /* Replace with your desired color */
+}
+
 html {
     font-size: var(--font-size-base);
     scroll-behavior: smooth;
@@ -100,13 +104,14 @@ p {
 }
 
 a {
-    color: var(--primary);
+    color: #F8F9FA;
     text-decoration: none;
     transition: color var(--transition-fast);
 }
 
 a:hover {
-    color: #3951cc;
+    color:#f81a36;
+    animation: step-end 0.2s;
     text-decoration: underline;
 }
 
@@ -509,30 +514,35 @@ input, textarea, select {
 
 .series-title {
     margin-bottom: var(--spacing-xs);
+    color: #FFFFFF !important;
 }
 
 .series-author {
     color: var(--text-secondary);
     margin-bottom: var(--spacing-lg);
+    color: #FFFFFF !important;
 }
 
 .series-actions {
     display: flex;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
     margin-bottom: var(--spacing-xl);
 }
 
 .series-description, .series-details {
     margin-bottom: var(--spacing-xl);
+    color: #FFFFFF !important;
 }
 
 .series-details ul {
     list-style: none;
     padding: 0;
+    color: #FFFFFF !important;
 }
 
 .series-details li {
     margin-bottom: var(--spacing-sm);
+    color: #FFFFFF !important;
 }
 
 .funding-goal {
@@ -582,10 +592,12 @@ input, textarea, select {
 .publish-date {
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
+    color: #FFFFFF !important;
 }
 
 .series-comments h2 {
     margin-bottom: var(--spacing-lg);
+    color: #FFFFFF !important;
 }
 
 .comment-form {
@@ -601,6 +613,7 @@ input, textarea, select {
     display: flex;
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
+    color: #FFFFFF !important;
 }
 
 .comment-avatar {
@@ -623,16 +636,19 @@ input, textarea, select {
 
 .comment-author {
     margin-bottom: 0;
+    color: #FFFFFF !important;
 }
 
 .comment-date {
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
     margin-bottom: var(--spacing-sm);
+    color: #FFFFFF !important;
 }
 
 .comment-actions {
     margin-top: var(--spacing-sm);
+    color: #FFFFFF !important;
 }
 
 .btn-reply, .btn-like {
@@ -642,6 +658,7 @@ input, textarea, select {
     cursor: pointer;
     font-size: var(--font-size-sm);
     margin-right: var(--spacing-md);
+    color: #FFFFFF !important;
 }
 
 /* === Reader Page === */

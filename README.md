@@ -5,8 +5,7 @@ A modern web platform for publishing and reading comics and web novels.
 ## Project Structure
 
 ```
-website/
-├── public/           # Public-facing website
+website/       # Public-facing website
 │   ├── index.html    # Homepage
 │   ├── series.html   # Series page
 │   ├── reader.html   # Reading interface
