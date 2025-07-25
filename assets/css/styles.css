@@ -68,12 +68,23 @@ html {
     scroll-behavior: smooth;
 }
 
+html, body {
+    height: 100%;
+}
+
 body {
-    font-family: 'Open Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
     color: var(--text-primary);
     background: url("../background.png") no-repeat center center fixed;
     background-size: cover;
+}
+
+main {
+        flex: 1 0 auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -200,7 +211,6 @@ input, textarea, select {
     background: linear-gradient(to bottom, #9ebaea 0%, #6c69a1 40%, #183066 100%);
     /* fallback for old browsers */
     background-color: #9ebaea;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 0px 0;
     position: sticky;
     top: 0;
@@ -218,7 +228,6 @@ input, textarea, select {
     padding: 0 2rem;
     box-sizing: border-box;
 }
-
 
 .logo img,
 .site-header .logo-image {
@@ -276,11 +285,21 @@ input, textarea, select {
 }
 
 /* === Footer === */
+/* Make footer full width and background stretch */
 .site-footer {
     background-color: var(--text-primary);
     color: white;
+    width: 100%;
     padding: var(--spacing-xl) 0;
     margin-top: var(--spacing-xxl);
+}
+
+.site-footer .container {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 0 2rem;
+    box-sizing: border-box;
 }
 
 .footer-content {
@@ -353,18 +372,19 @@ input, textarea, select {
 /* === Home Page === */
 .hero {
     padding-top: 0;
-    padding-bottom: var(--spacing-xl);
+    margin-top: 0;
 }
 
 .hero-banner {
     width: 100vw;
     margin-left: calc(50% - 50vw);
     background: url("../defaultheroimage.jpg") no-repeat center center;
-    background-size: cover; 
+    background-size: cover;
     color: white;
     border-radius: var(--border-radius-lg);
     padding: var(--spacing-xxl);
     text-align: center;
+    margin-bottom: var(--spacing-xl); 
 }
 
 .hero-content h1 {
@@ -421,6 +441,7 @@ input, textarea, select {
     margin-bottom: var(--spacing-lg);
     position: relative;
     padding-bottom: var(--spacing-sm);
+    margin-top: 2rem; 
 }
 
 /* Section Titles: white with shadow for emphasis */
@@ -446,6 +467,7 @@ input, textarea, select {
 }
 
 .content-card {
+    padding-top: 15px;
     background-color: var(--surface);
     border-radius: var(--border-radius-md);
     overflow: hidden;
@@ -494,22 +516,22 @@ input, textarea, select {
     font-size: var(--font-size-sm);
 }
 
+
 /* === Series Page === */
-.series-page {
-    padding: var(--spacing-xl) 0;
+.series-hero {
+    padding-top: 0;
+    margin-top: 0;
 }
 
-.series-banner {
-    height: 300px;
-    border-radius: var(--border-radius-lg);
-    overflow: hidden;
-    margin-bottom: var(--spacing-xl);
-}
-
-.series-banner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.series-hero-banner {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    background: url("../sampleimage.jpg") no-repeat center center;
+    background-position: lower center;
+    background-size: cover;
+    height: 400px;
+    padding: var(--spacing-xxl);
+    margin-bottom: var(--spacing-xl); 
 }
 
 .series-title {
@@ -830,19 +852,6 @@ input, textarea, select {
     padding: var(--spacing-xl) 0;
 }
 
-.profile-banner {
-    height: 200px;
-    border-radius: var(--border-radius-lg);
-    overflow: hidden;
-    margin-bottom: var(--spacing-xl);
-}
-
-.profile-banner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 .profile-header {
     display: flex;
     gap: var(--spacing-lg);
@@ -885,7 +894,10 @@ input, textarea, select {
 .profile-tabs {
     background-color: var(--surface);
     border-radius: var(--border-radius-lg);
-    padding: var(--spacing-lg);
+    padding-top: 0;
+    padding-bottom: var(--spacing-lg);
+    padding-left: var(--spacing-lg);
+    padding-right: var(--spacing-lg);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -903,6 +915,7 @@ input, textarea, select {
 
 .tabs-nav a {
     display: block;
+    padding-top: 1rem !important;
     padding: var(--spacing-md) 0;
     color: var(--text-secondary);
     text-decoration: none;
