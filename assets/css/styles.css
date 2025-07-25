@@ -378,7 +378,8 @@ input, textarea, select {
 .hero-banner {
     width: 100vw;
     margin-left: calc(50% - 50vw);
-    background: url("../defaultheroimage.jpg") no-repeat center center;
+    background: url("../defaultheroimage.jpg") no-repeat top center;
+    height: 300px;
     background-size: cover;
     color: white;
     border-radius: var(--border-radius-lg);
