@@ -14,8 +14,11 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h1 class="sidebar-logo">Dreams Uncharted</h1>
-                <p class="sidebar-subtitle">Admin Dashboard</p>
+                <div class="logo">
+                <a href="index.html">
+                <img src="assets/images/dreams.png" alt="Dreams Uncharted Logo" class="logo-image">
+                </a>
+                </div>
             </div>
             
             <nav class="sidebar-nav">
@@ -62,6 +65,12 @@
                             <span class="sidebar-text">Settings</span>
                         </a>
                     </li>
+                    <li class="sidebar-item">
+                        <a href="artist.html" class="sidebar-link">
+                            <span class="sidebar-icon">🎨</span>
+                            <span class="sidebar-text">Artist Dashboard</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
             
@@ -103,7 +112,7 @@
             <!-- Editor Content -->
             <div class="editor-container">
                 <!-- Editor Sidebar -->
-                <div class="editor-sidebar">
+                <div class="editor-sidebar" style="padding-top: 0px;padding-left: 0px;margin-top: 15px;margin-left: 15px;">
                     <div class="editor-sidebar-section">
                         <h3 class="sidebar-section-title">Content Settings</h3>
                         <div class="form-group">
@@ -164,10 +173,12 @@
                     
                     <div class="editor-sidebar-section">
                         <h3 class="sidebar-section-title">Featured Image</h3>
-                        <div class="image-upload-container">
-                            <div class="image-preview">
+
+                        <div class="image-preview">
                                 <img src="assets/images/image-placeholder.svg" alt="Featured Image" id="featured-image-preview">
-                            </div>
+                        </div>
+
+                        <div class="image-upload-container">
                             <button class="btn btn-secondary upload-image-btn">Upload Image</button>
                         </div>
                     </div>
@@ -176,7 +187,7 @@
                 <!-- Block Editor Main -->
                 <div class="block-editor">
                     <div class="editor-header">
-                        <h2 class="editor-title" id="editor-title">Untitled Content</h2>
+                        <h2 class="editor-title" id="editor-title" style="padding-top: 10px;padding-left: 15px;">Untitled Content</h2>
                     </div>
                     
                     <!-- Block Controls -->
@@ -223,17 +234,6 @@
                         </div>
                     </div>
                     
-                    <!-- Blocks Container -->
-                    <div class="blocks-container" id="blocks-container">
-                        <!-- Initial empty state message -->
-                        <div class="empty-state" id="empty-state">
-                            <div class="empty-state-icon">✏️</div>
-                            <h3>Start Creating Your Content</h3>
-                            <p>Click on any block type above to begin adding content</p>
-                        </div>
-                        
-                        <!-- Blocks will be added here dynamically -->
-                    </div>
                 </div>
             </div>
         </main>

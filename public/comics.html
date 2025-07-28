@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comics Library - Dreams Uncharted</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="assets/js/auth.js"></script>
+</head>
+<body>
+    <!-- Header (copied from index.html) -->
+ <header class="site-header">
+  <div class="container">
+    <div class="logo">
+      <a href="index.html">
+        <img src="assets/Images/dreams.png" alt="Dreams Uncharted Logo" class="logo-image">
+      </a>
+    </div>
+    <div class="header-right">
+      <nav class="main-nav">
+  <ul>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="comics.html">Comics</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="novels.html">Novels</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="artists.html">Artists</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="authors.html">Authors</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="creator.html">Creators</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</nav>
+      <div class="search-bar">
+        <form action="search.html" method="get">
+          <input type="text" name="query" placeholder="Search...">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+      <div class="user-nav">
+        <div class="holographic-container">
+                <div class="holographic-card">
+          <a href="login.html">Login</a>
+                </div>
+            </div>
+        </div>
+</div>
+</header>
+
+    <main>
+        <section class="genre-filters">
+            <div class="container">
+                <h2 class="section-title" style="padding-top: 30px;">Browse by Genre</h2>
+                <div class="genre-buttons">
+                    <button class="genre-btn active" data-genre="All">All</button>
+                    <button class="genre-btn" data-genre="Fantasy">Fantasy</button>
+                    <button class="genre-btn" data-genre="Action">Action</button>
+                    <button class="genre-btn" data-genre="Sci-Fi">Sci-Fi</button>
+                    <button class="genre-btn" data-genre="Adventure">Adventure</button>
+                    <button class="genre-btn" data-genre="Mystery">Mystery</button>
+                    <button class="genre-btn" data-genre="Drama">Drama</button>
+                    <button class="genre-btn" data-genre="Romance">Romance</button>
+                    <button class="genre-btn" data-genre="Comedy">Comedy</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <h2 class="section-title">All Comics</h2>
+                <div class="content-grid">
+                    <!-- Example Comic Card -->
+                    <div class="content-card" data-genre="Fantasy, Action">
+                        <div class="card-image">
+                            <img src="assets/images/placeholder-1.jpg" alt="The Last Guardian">
+                        </div>
+                        <div class="card-info">
+                            <h3>The Last Guardian</h3>
+                            <p class="author">By Sarah Johnson</p>
+                            <p class="genre">Fantasy, Action</p>
+                        </div>
+                        <div class="card-summary">
+                            A legendary hero awakens to defend the world from ancient evils. Magic, monsters, and epic battles await!
+                        </div>
+                    </div>
+                    <div class="content-card" data-genre="Sci-Fi, Adventure">
+                        <div class="card-image">
+                            <img src="assets/images/placeholder-2.jpg" alt="Starbound">
+                        </div>
+                        <div class="card-info">
+                            <h3>Starbound</h3>
+                            <p class="author">By Alex Rodriguez</p>
+                            <p class="genre">Sci-Fi, Adventure</p>
+                        </div>
+                        <div class="card-summary">
+                            Join a crew of explorers as they journey through the cosmos, facing alien threats and uncovering mysteries.
+                        </div>
+                    </div>
+                    <div class="content-card" data-genre="Mystery, Drama">
+                        <div class="card-image">
+                            <img src="assets/images/placeholder-3.jpg" alt="Shadowed Truths">
+                        </div>
+                        <div class="card-info">
+                            <h3>Shadowed Truths</h3>
+                            <p class="author">By Olivia Kim</p>
+                            <p class="genre">Mystery, Drama</p>
+                        </div>
+                        <div class="card-summary">
+                            A detective with a haunted past unravels a web of secrets in a city where nothing is as it seems.
+                        </div>
+                    </div>
+                    <div class="content-card" data-genre="Romance, Comedy">
+                        <div class="card-image">
+                            <img src="assets/images/placeholder-4.jpg" alt="Love & Laughter">
+                        </div>
+                        <div class="card-info">
+                            <h3>Love & Laughter</h3>
+                            <p class="author">By Emily Taylor</p>
+                            <p class="genre">Romance, Comedy</p>
+                        </div>
+                        <div class="card-summary">
+                            Two unlikely friends navigate the ups and downs of love, friendship, and hilarious misunderstandings.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Dreams Uncharted</h2>
+                </div>
+                <div class="footer-links">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="comics.html">Comics</a></li>
+                        <li><a href="novels.html">Novels</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="copyright.html">Copyright</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter</p>
+                    <form>
+                        <input type="email" placeholder="Your email">
+                        <button type="submit" class="btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Dreams Uncharted LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+    // Genre filter logic
+    document.querySelectorAll('.genre-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const genre = this.getAttribute('data-genre');
+            document.querySelectorAll('.content-card').forEach(card => {
+                if (genre === 'All' || card.getAttribute('data-genre').includes(genre)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+    // Card summary on hover
+    document.querySelectorAll('.content-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.querySelector('.card-summary').style.display = 'block';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.querySelector('.card-summary').style.display = 'none';
+        });
+    });
+    </script>
+    <style>
+    .genre-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+    .genre-btn {
+        padding: 8px 18px;
+        border: none;
+        background: var(--surface);
+        color: var(--primary);
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background var(--transition-fast), color var(--transition-fast);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .genre-btn.active, .genre-btn:hover {
+        background: var(--secondary);
+        color: #fff;
+    }
+    .content-card { position: relative; overflow: visible; }
+    .card-summary {
+        display: none;
+        position: absolute;
+        left: 0; right: 0; bottom: 100%;
+        background: var(--surface);
+        color: var(--text-primary);
+        border: 1px solid var(--border);
+        border-radius: var(--border-radius-md);
+        padding: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        z-index: 10;
+        width: 260px;
+        margin: 0 auto 10px auto;
+        font-size: 0.95em;
+    }
+    .content-card:hover .card-summary { display: block; }
+    </style>
+</body>
+</html>

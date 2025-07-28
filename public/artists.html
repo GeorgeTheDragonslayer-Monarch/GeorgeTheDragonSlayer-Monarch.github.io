@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artists - Dreams Uncharted</title>
+    <link rel="stylesheet" href="assets/css/normalize.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="assets/js/auth.js"></script>
+</head>
+<body>
+ <header class="site-header">
+  <div class="container">
+    <div class="logo">
+      <a href="index.html">
+        <img src="assets/Images/dreams.png" alt="Dreams Uncharted Logo" class="logo-image">
+      </a>
+    </div>
+    <div class="header-right">
+      <nav class="main-nav">
+  <ul>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="comics.html">Comics</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="novels.html">Novels</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="artists.html">Artists</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="authors.html">Authors</a>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="holographic-container">
+        <div class="holographic-card">
+          <a href="creator.html">Creators</a>
+        </div>
+      </div>
+    </li>
+  </ul>
+</nav>
+      <div class="search-bar">
+        <form action="search.html" method="get">
+          <input type="text" name="query" placeholder="Search...">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+      <div class="user-nav">
+        <div class="holographic-container">
+                <div class="holographic-card">
+          <a href="login.html">Login</a>
+                </div>
+            </div>
+        </div>
+</div>
+</header>
+    <main>
+        <section class="content-section">
+            <div class="container">
+                <h1 class="section-title" style="padding-top: 30px;">All Artists</h1>
+                <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem;">
+                    <div class="content-card creator-card" onclick="location.href='artist.html?id=1'" style="cursor:pointer;">
+                        <div class="card-image" style="height:120px;width:120px;margin:0 auto;overflow:hidden;border-radius:50%;background:#eee;">
+                            <img src="assets/images/admin-avatar.svg" alt="Jane Doe" style="object-fit:cover;width:100%;height:100%;">
+                        </div>
+                        <div class="card-info" style="text-align:center;">
+                            <h3>Jane Doe</h3>
+                            <p class="author">Digital Artist</p>
+                            <p class="bio" style="font-size:0.95em;color:#666;">Loves fantasy worlds and vibrant colors. Creator of 'Starfall'.</p>
+                            <div class="works-list" style="margin-top:8px;font-size:0.9em;color:#444;">
+                                <strong>Works:</strong> Starfall, Dreamscape
+                            </div>
+                        </div>
+                    </div>
+                    <div class="content-card creator-card" onclick="location.href='artist.html?id=2'" style="cursor:pointer;">
+                        <div class="card-image" style="height:120px;width:120px;margin:0 auto;overflow:hidden;border-radius:50%;background:#eee;">
+                            <img src="assets/images/placeholder-9.jpg" alt="Alex Kim" style="object-fit:cover;width:100%;height:100%;">
+                        </div>
+                        <div class="card-info" style="text-align:center;">
+                            <h3>Alex Kim</h3>
+                            <p class="author">Comic Illustrator</p>
+                            <p class="bio" style="font-size:0.95em;color:#666;">Mixes sci-fi and slice-of-life. Creator of 'Neon Alley'.</p>
+                            <div class="works-list" style="margin-top:8px;font-size:0.9em;color:#444;">
+                                <strong>Works:</strong> Neon Alley, Robo Days
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add more artist cards as needed -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>Dreams Uncharted</h2>
+                </div>
+                <div class="footer-links">
+                    <h3>Navigation</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="comics.html">Comics</a></li>
+                        <li><a href="novels.html">Novels</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="copyright.html">Copyright</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter</p>
+                    <form>
+                        <input type="email" placeholder="Your email">
+                        <button type="submit" class="btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Dreams Uncharted LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="assets/js/main.js"></script>
+</body>
+</html>

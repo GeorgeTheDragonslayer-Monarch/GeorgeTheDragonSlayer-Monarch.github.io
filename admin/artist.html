@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artist Admin - Dreams Uncharted</title>
-    <link rel="stylesheet" href="assets/css/normalize.css">
+    <title>Artist Dashboard - Dreams Uncharted</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Open+Sans:wght@400;500;700&family=Roboto+Mono&display=swap">
     <link rel="stylesheet" href="assets/css/admin.css">
     <style>
-        .artist-header { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; }
+        .artist-header { display: flex; align-items: center; gap: 30px; margin-bottom: 30px; margin-left: 20px;}
         .artist-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--secondary); }
-        .upload-section { margin: 40px 0; }
+        .upload-section { margin: 40px 30px; }
         .art-gallery {
             display: flex;
             flex-wrap: wrap;
@@ -20,7 +20,12 @@
             width: 100%;
         }
         .art-card {
+            display:flex
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch
             width: 180px;
+            height: 240px;
             background: var(--surface);
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
@@ -29,7 +34,7 @@
             margin-left: 10px;
             margin-right: 10px;
         }
-        .art-card img { width: 100%; display: block; cursor: pointer; }
+        .art-card img { flex 1 1 auto; width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer; }
         .art-card-actions { display: flex; gap: 8px; justify-content: center; margin: 8px 0; }
         .art-action-btn { background: var(--secondary,#6c69a1); color: #fff; border: none; border-radius: 6px; padding: 4px 12px; font-size: 0.95em; cursor: pointer; transition: background 0.2s; }
         .art-action-btn.hide { background: #e0a800; }
@@ -46,18 +51,103 @@
     <script src="assets/js/auth.js"></script>
 </head>
 <body>
-    <header class="admin-header">
-        <div class="container">
-            <h1>Artist Admin Panel</h1>
-            <nav>
-                <a href="index.html">Dashboard</a>
-                <a href="artist.html" class="active">My Art</a>
-                <!-- Add more admin links as needed -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <a href="index.html">
+                        <img src="assets/images/dreams.png" alt="Dreams Uncharted Logo" class="logo-image">
+                    </a>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul class="sidebar-menu">
+                    <li class="sidebar-item">
+                        <a href="index.html" class="sidebar-link">
+                            <span class="sidebar-icon">📊</span>
+                            <span class="sidebar-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="content.html" class="sidebar-link">
+                            <span class="sidebar-icon">📚</span>
+                            <span class="sidebar-text">Content</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="editor.html" class="sidebar-link">
+                            <span class="sidebar-icon">✏️</span>
+                            <span class="sidebar-text">Block Editor</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="comments.html" class="sidebar-link">
+                            <span class="sidebar-icon">💬</span>
+                            <span class="sidebar-text">Comments</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="users.html" class="sidebar-link">
+                            <span class="sidebar-icon">👥</span>
+                            <span class="sidebar-text">Users</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="analytics.html" class="sidebar-link">
+                            <span class="sidebar-icon">📈</span>
+                            <span class="sidebar-text">Analytics</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a href="settings.html" class="sidebar-link">
+                            <span class="sidebar-icon">⚙️</span>
+                            <span class="sidebar-text">Settings</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item active">
+                        <a href="artist.html" class="sidebar-link">
+                            <span class="sidebar-icon">🎨</span>
+                            <span class="sidebar-text">Artist Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
             </nav>
-        </div>
-    </header>
-    <main>
-        <div class="container">
+            
+            <div class="sidebar-footer">
+                <a href="../public/index.html" class="sidebar-link" target="_blank">
+                    <span class="sidebar-icon">🌐</span>
+                    <span class="sidebar-text">View Site</span>
+                </a>
+                <a href="#" class="sidebar-link logout-link">
+                    <span class="sidebar-icon">🚪</span>
+                    <span class="sidebar-text">Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="admin-header" style="margin-bottom: 20px;">
+                <div class="header-left">
+                    <button class="menu-toggle">
+                        <span class="menu-icon">☰</span>
+                    </button>
+                    <h2 class="page-title">Artist Dashboard</h2>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <img src="assets/images/admin-avatar.svg" alt="Admin User" class="user-avatar">
+                        <span class="user-name">Admin User</span>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Artist Content -->
+            <div class="artist-content">
+                <div class="container">
             <section class="artist-header">
                 <img src="../public/assets/images/artist-avatar-placeholder.png" alt="Artist Avatar" class="artist-avatar">
                 <div class="artist-info">
@@ -72,11 +162,14 @@
                     <button type="submit" class="btn">Upload</button>
                 </form>
             </section>
+
             <section class="art-gallery" id="artGallery">
                 <!-- Uploaded art will appear here -->
             </section>
         </div>
-    </main>
+    </div>
+    
+    <!-- Modal for art editing -->
     <div class="admin-art-modal" id="adminArtModal">
         <div class="admin-art-modal-content">
             <span class="close" id="closeAdminArtModal">&times;</span>
@@ -91,6 +184,9 @@
             </div>
         </div>
     </div>
+            </div>
+        </main>
+    </div>
     <script>
     // Store art in localStorage for demo
     function getArtList() {
@@ -100,30 +196,21 @@
         localStorage.setItem('artistArtList', JSON.stringify(list));
     }
     function renderGallery() {
-        const gallery = document.getElementById('artGallery');
-        gallery.innerHTML = '';
-        const artList = getArtList();
-        if (!artList.length) {
-            gallery.innerHTML = '<em>No art uploaded yet.</em>';
-            return;
-        }
-        // Centered rows, 5 per row
-        let row = null;
-        artList.forEach((art, idx) => {
-            if (idx % 5 === 0) {
-                row = document.createElement('div');
-                row.style.display = 'flex';
-                row.style.justifyContent = 'center';
-                row.style.marginBottom = '20px';
-                gallery.appendChild(row);
-            }
-            const card = document.createElement('div');
-            card.className = 'art-card';
-            card.innerHTML = `<img src="${art.url}" alt="Artwork ${idx+1}" data-idx="${idx}">`;
-            if (art.hidden) card.style.opacity = '0.5';
-            row.appendChild(card);
-        });
+    const gallery = document.getElementById('artGallery');
+    gallery.innerHTML = '';
+    const artList = getArtList();
+    if (!artList.length) {
+        gallery.innerHTML = '<em>No art uploaded yet.</em>';
+        return;
     }
+    artList.forEach((art, idx) => {
+        const card = document.createElement('div');
+        card.className = 'art-card';
+        card.innerHTML = `<img src="${art.url}" alt="Artwork ${idx+1}" data-idx="${idx}">`;
+        if (art.hidden) card.style.opacity = '0.5';
+        gallery.appendChild(card);
+    });
+}
     renderGallery();
     document.getElementById('uploadForm').addEventListener('submit', function(e) {
         e.preventDefault();
