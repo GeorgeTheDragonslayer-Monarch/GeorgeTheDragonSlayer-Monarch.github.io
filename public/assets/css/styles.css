@@ -443,7 +443,7 @@ input, textarea, select {
 .hero-banner {
     width: 100vw;
     margin-left: calc(50% - 50vw);
-    background: url("/assets/Images/defaultheroimage.jpg") no-repeat top center;
+    background: url("/public/assets/Images/defaultheroimage.jpg") no-repeat top center;
     height: 300px;
     background-size: cover;
     color: white;
