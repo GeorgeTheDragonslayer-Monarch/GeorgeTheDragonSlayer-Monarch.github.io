@@ -1,27 +1,52 @@
 {
   "name": "dreams-uncharted-server",
-  "version": "1.0.0",
-  "description": "Server for Dreams Uncharted content platform",
+  "version": "2.0.0",
+  "description": "Dreams Uncharted Platform Backend with Funding System",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "express-fileupload": "^1.4.0",
-    "express-session": "^1.18.1",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.1.0",
-    "morgan": "^1.10.0",
-    "passport": "^0.7.0",
-    "passport-google-oauth20": "^2.0.0"
+    "mongoose": "^7.4.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express-session": "^1.17.3",
+    "connect-mongo": "^5.0.0",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "multer": "^1.4.5-lts.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.1",
+    "stripe": "^12.14.0",
+    "nodemailer": "^6.9.4",
+    "node-cron": "^3.0.2",
+    "express-rate-limit": "^6.8.1",
+    "helmet": "^7.0.0",
+    "express-validator": "^7.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.1",
+    "supertest": "^6.3.3"
+  },
+  "keywords": [
+    "comics",
+    "webnovels",
+    "funding",
+    "crowdfunding",
+    "stripe",
+    "paypal",
+    "mongodb",
+    "express"
+  ],
+  "author": "Dreams Uncharted Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
+
