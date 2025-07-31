@@ -3,177 +3,113 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import PaymentForm from './PaymentForm';
 import RewardTiers from './RewardTiers';
-import { formatCurrency } from '../../utils/formatCurrency';
-import './DonationModal.css';
+import { formatCurrency } from '@utils/formatCurrency';
 
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+// Initialize Stripe
+const stripePromise = loadStripe(window.STRIPE_PUBLISHABLE_KEY || 'pk_test_placeholder');
 
-const DonationModal = ({ 
-  isOpen, 
-  onClose, 
-  fundingGoal, 
-  user 
-}) => {
-  const [selectedAmount, setSelectedAmount] = useState(null);
+const DonationModal = ({ goal, onClose, onSuccess }) => {
+  const [selectedAmount, setSelectedAmount] = useState(25);
   const [customAmount, setCustomAmount] = useState('');
-  const [selectedReward, setSelectedReward] = useState(null);
+  const [selectedTier, setSelectedTier] = useState(null);
   const [donorInfo, setDonorInfo] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
+    name: '',
+    email: '',
     message: '',
     isAnonymous: false
   });
-  const [paymentMethod, setPaymentMethod] = useState('stripe');
-  const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [currentStep, setCurrentStep] = useState('amount'); // amount, payment, success
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  // Preset donation amounts
   const presetAmounts = [5, 10, 25, 50, 100];
 
   useEffect(() => {
-    if (user) {
-      setDonorInfo(prev => ({
-        ...prev,
-        name: user.name || '',
-        email: user.email || ''
-      }));
+    // Auto-select reward tier based on amount
+    if (goal.rewardTiers && goal.rewardTiers.length > 0) {
+      const amount = customAmount ? parseFloat(customAmount) : selectedAmount;
+      const availableTier = goal.rewardTiers
+        .filter(tier => amount >= tier.amount && (!tier.maxBackers || tier.currentBackers < tier.maxBackers))
+        .sort((a, b) => b.amount - a.amount)[0];
+      
+      setSelectedTier(availableTier || null);
     }
-  }, [user]);
+  }, [selectedAmount, customAmount, goal.rewardTiers]);
 
   const handleAmountSelect = (amount) => {
     setSelectedAmount(amount);
     setCustomAmount('');
-    
-    // Auto-select appropriate reward tier
-    if (fundingGoal.rewardTiers) {
-      const eligibleRewards = fundingGoal.rewardTiers
-        .filter(tier => amount >= tier.amount)
-        .sort((a, b) => b.amount - a.amount);
-      
-      if (eligibleRewards.length > 0) {
-        setSelectedReward(eligibleRewards[0]);
-      }
-    }
   };
 
   const handleCustomAmountChange = (e) => {
-    const amount = parseFloat(e.target.value);
-    setCustomAmount(e.target.value);
-    setSelectedAmount(amount);
-    
-    // Update reward tier based on custom amount
-    if (fundingGoal.rewardTiers && amount) {
-      const eligibleRewards = fundingGoal.rewardTiers
-        .filter(tier => amount >= tier.amount)
-        .sort((a, b) => b.amount - a.amount);
-      
-      setSelectedReward(eligibleRewards.length > 0 ? eligibleRewards[0] : null);
+    const value = e.target.value;
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setCustomAmount(value);
+      setSelectedAmount(0);
     }
   };
 
-  const handleRewardSelect = (reward) => {
-    setSelectedReward(reward);
-    if (reward && (!selectedAmount || selectedAmount < reward.amount)) {
-      setSelectedAmount(reward.amount);
-      setCustomAmount(reward.amount.toString());
-    }
+  const getFinalAmount = () => {
+    return customAmount ? parseFloat(customAmount) : selectedAmount;
   };
 
-  const handleDonorInfoChange = (field, value) => {
-    setDonorInfo(prev => ({
-      ...prev,
-      [field]: value
-    }));
-  };
-
-  const handleProceedToPayment = () => {
-    if (!selectedAmount || selectedAmount < 1) {
-      alert('Please select a donation amount of at least $1');
+  const handleContinueToPayment = () => {
+    const amount = getFinalAmount();
+    if (amount < 1) {
+      alert('Minimum donation amount is $1');
       return;
     }
-    
-    if (!donorInfo.name.trim()) {
-      alert('Please enter your name');
-      return;
-    }
-    
-    if (!donorInfo.email.trim()) {
-      alert('Please enter your email');
-      return;
-    }
-    
-    setShowPaymentForm(true);
+    setCurrentStep('payment');
   };
 
-  const handlePaymentSuccess = () => {
-    onClose();
-    // Redirect to success page or show success message
-    window.location.href = `/donation/success`;
-  };
-
-  const handlePayPalPayment = async () => {
-    try {
-      const response = await fetch('/api/payments/paypal/create-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fundingGoalId: fundingGoal._id,
-          amount: selectedAmount,
-          donorName: donorInfo.name,
-          donorEmail: donorInfo.email,
-          message: donorInfo.message,
-          isAnonymous: donorInfo.isAnonymous,
-          rewardTier: selectedReward
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (data.success) {
-        window.location.href = data.data.paymentUrl;
-      } else {
-        alert('Error creating PayPal payment: ' + data.message);
-      }
-    } catch (error) {
-      console.error('PayPal payment error:', error);
-      alert('Error processing PayPal payment');
+  const handlePaymentSuccess = (paymentResult) => {
+    setCurrentStep('success');
+    setIsProcessing(false);
+    if (onSuccess) {
+      onSuccess(paymentResult);
     }
   };
 
-  if (!isOpen) return null;
+  const handlePaymentError = (error) => {
+    setIsProcessing(false);
+    alert('Payment failed: ' + error.message);
+  };
+
+  const handleBackToAmount = () => {
+    setCurrentStep('amount');
+  };
+
+  const handleModalClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   return (
-    <div className="donation-modal-overlay" onClick={onClose}>
-      <div className="donation-modal" onClick={e => e.stopPropagation()}>
+    <div className="donation-modal-overlay" onClick={handleModalClick}>
+      <div className="donation-modal">
         <div className="modal-header">
-          <h2>Support {fundingGoal.title}</h2>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <h3>Support: {goal.title}</h3>
+          <button className="modal-close" onClick={onClose}>×</button>
         </div>
-        
+
         <div className="modal-content">
-          {!showPaymentForm ? (
-            <>
-              {/* Goal Summary */}
+          {currentStep === 'amount' && (
+            <div className="amount-selection">
               <div className="goal-summary">
-                <div className="goal-progress">
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
-                      style={{ 
-                        width: `${Math.min((fundingGoal.currentAmount / fundingGoal.targetAmount) * 100, 100)}%` 
-                      }}
-                    />
-                  </div>
-                  <div className="progress-text">
-                    {formatCurrency(fundingGoal.currentAmount)} of {formatCurrency(fundingGoal.targetAmount)} goal
-                  </div>
+                <div className="progress-info">
+                  <span>{formatCurrency(goal.currentAmount)} raised</span>
+                  <span>of {formatCurrency(goal.targetAmount)} goal</span>
+                </div>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill" 
+                    style={{ width: `${Math.min((goal.currentAmount / goal.targetAmount) * 100, 100)}%` }}
+                  ></div>
                 </div>
               </div>
 
-              {/* Amount Selection */}
-              <div className="amount-selection">
-                <h3>Choose your support amount</h3>
+              <div className="amount-options">
+                <h4>Choose Amount</h4>
                 <div className="preset-amounts">
                   {presetAmounts.map(amount => (
                     <button
@@ -181,20 +117,17 @@ const DonationModal = ({
                       className={`amount-btn ${selectedAmount === amount ? 'selected' : ''}`}
                       onClick={() => handleAmountSelect(amount)}
                     >
-                      {formatCurrency(amount)}
+                      ${amount}
                     </button>
                   ))}
                 </div>
-                
+
                 <div className="custom-amount">
-                  <label htmlFor="custom-amount">Custom amount:</label>
+                  <label>Custom Amount</label>
                   <div className="amount-input">
                     <span className="currency-symbol">$</span>
                     <input
-                      id="custom-amount"
-                      type="number"
-                      min="1"
-                      step="0.01"
+                      type="text"
                       value={customAmount}
                       onChange={handleCustomAmountChange}
                       placeholder="Enter amount"
@@ -203,139 +136,155 @@ const DonationModal = ({
                 </div>
               </div>
 
-              {/* Reward Tiers */}
-              {fundingGoal.rewardTiers && fundingGoal.rewardTiers.length > 0 && (
+              {goal.rewardTiers && goal.rewardTiers.length > 0 && (
                 <RewardTiers
-                  tiers={fundingGoal.rewardTiers}
-                  selectedAmount={selectedAmount}
-                  selectedReward={selectedReward}
-                  onRewardSelect={handleRewardSelect}
+                  tiers={goal.rewardTiers}
+                  selectedAmount={getFinalAmount()}
+                  selectedTier={selectedTier}
+                  onTierSelect={setSelectedTier}
                 />
               )}
 
-              {/* Donor Information */}
               <div className="donor-info">
-                <h3>Your information</h3>
+                <h4>Your Information</h4>
                 <div className="form-group">
-                  <label htmlFor="donor-name">Name *</label>
                   <input
-                    id="donor-name"
                     type="text"
+                    placeholder="Your name"
                     value={donorInfo.name}
-                    onChange={(e) => handleDonorInfoChange('name', e.target.value)}
-                    placeholder="Your full name"
-                    required
+                    onChange={(e) => setDonorInfo({...donorInfo, name: e.target.value})}
                   />
                 </div>
-                
                 <div className="form-group">
-                  <label htmlFor="donor-email">Email *</label>
                   <input
-                    id="donor-email"
                     type="email"
+                    placeholder="Your email"
                     value={donorInfo.email}
-                    onChange={(e) => handleDonorInfoChange('email', e.target.value)}
-                    placeholder="your@email.com"
-                    required
+                    onChange={(e) => setDonorInfo({...donorInfo, email: e.target.value})}
                   />
                 </div>
-                
                 <div className="form-group">
-                  <label htmlFor="donor-message">Message (optional)</label>
                   <textarea
-                    id="donor-message"
+                    placeholder="Leave a message (optional)"
                     value={donorInfo.message}
-                    onChange={(e) => handleDonorInfoChange('message', e.target.value)}
-                    placeholder="Leave a message for the creator..."
-                    maxLength={500}
-                    rows={3}
-                  />
-                  <small>{donorInfo.message.length}/500 characters</small>
+                    onChange={(e) => setDonorInfo({...donorInfo, message: e.target.value})}
+                    rows="3"
+                  ></textarea>
                 </div>
-                
-                <div className="form-group checkbox">
+                <div className="form-group checkbox-group">
                   <label>
                     <input
                       type="checkbox"
                       checked={donorInfo.isAnonymous}
-                      onChange={(e) => handleDonorInfoChange('isAnonymous', e.target.checked)}
+                      onChange={(e) => setDonorInfo({...donorInfo, isAnonymous: e.target.checked})}
                     />
                     Make this donation anonymous
                   </label>
                 </div>
               </div>
 
-              {/* Payment Method Selection */}
-              <div className="payment-method-selection">
-                <h3>Payment method</h3>
-                <div className="payment-methods">
-                  <label className="payment-method">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="stripe"
-                      checked={paymentMethod === 'stripe'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                    />
-                    <span className="method-info">
-                      <strong>Credit/Debit Card</strong>
-                      <small>Secure payment via Stripe</small>
-                    </span>
-                  </label>
-                  
-                  <label className="payment-method">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="paypal"
-                      checked={paymentMethod === 'paypal'}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                    />
-                    <span className="method-info">
-                      <strong>PayPal</strong>
-                      <small>Pay with your PayPal account</small>
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
               <div className="modal-actions">
                 <button className="btn btn-secondary" onClick={onClose}>
                   Cancel
                 </button>
-                
-                {paymentMethod === 'stripe' ? (
-                  <button 
-                    className="btn btn-primary"
-                    onClick={handleProceedToPayment}
-                    disabled={!selectedAmount || selectedAmount < 1}
-                  >
-                    Continue to Payment
-                  </button>
-                ) : (
-                  <button 
-                    className="btn btn-primary"
-                    onClick={handlePayPalPayment}
-                    disabled={!selectedAmount || selectedAmount < 1}
-                  >
-                    Pay with PayPal
-                  </button>
-                )}
+                <button 
+                  className="btn btn-primary"
+                  onClick={handleContinueToPayment}
+                  disabled={getFinalAmount() < 1}
+                >
+                  Continue to Payment - {formatCurrency(getFinalAmount())}
+                </button>
               </div>
-            </>
-          ) : (
-            /* Payment Form */
-            <Elements stripe={stripePromise}>
-              <PaymentForm
-                fundingGoal={fundingGoal}
-                amount={selectedAmount}
-                donorInfo={donorInfo}
-                selectedReward={selectedReward}
-                onSuccess={handlePaymentSuccess}
-                onBack={() => setShowPaymentForm(false)}
-              />
-            </Elements>
+            </div>
+          )}
+
+          {currentStep === 'payment' && (
+            <div className="payment-section">
+              <div className="payment-summary">
+                <h4>Payment Summary</h4>
+                <div className="summary-line">
+                  <span>Donation Amount:</span>
+                  <span>{formatCurrency(getFinalAmount())}</span>
+                </div>
+                {selectedTier && (
+                  <div className="summary-line">
+                    <span>Reward Tier:</span>
+                    <span>{selectedTier.title}</span>
+                  </div>
+                )}
+                <div className="summary-line total">
+                  <span>Total:</span>
+                  <span>{formatCurrency(getFinalAmount())}</span>
+                </div>
+              </div>
+
+              <Elements stripe={stripePromise}>
+                <PaymentForm
+                  amount={getFinalAmount()}
+                  goalId={goal._id}
+                  donorInfo={donorInfo}
+                  selectedTier={selectedTier}
+                  onSuccess={handlePaymentSuccess}
+                  onError={handlePaymentError}
+                  isProcessing={isProcessing}
+                  setIsProcessing={setIsProcessing}
+                />
+              </Elements>
+
+              <div className="modal-actions">
+                <button 
+                  className="btn btn-secondary" 
+                  onClick={handleBackToAmount}
+                  disabled={isProcessing}
+                >
+                  Back
+                </button>
+              </div>
+            </div>
+          )}
+
+          {currentStep === 'success' && (
+            <div className="success-section">
+              <div className="success-message">
+                <div className="success-icon">🎉</div>
+                <h4>Thank You!</h4>
+                <p>Your donation of {formatCurrency(getFinalAmount())} has been processed successfully.</p>
+                
+                {selectedTier && (
+                  <div className="reward-confirmation">
+                    <h5>Your Reward</h5>
+                    <div className="reward-details">
+                      <strong>{selectedTier.title}</strong>
+                      <p>{selectedTier.description}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="next-steps">
+                  <p>You will receive a confirmation email shortly with your receipt and reward details.</p>
+                </div>
+              </div>
+
+              <div className="modal-actions">
+                <button className="btn btn-primary" onClick={onClose}>
+                  Close
+                </button>
+                <button 
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: `I just supported: ${goal.title}`,
+                        text: `Help support this amazing project!`,
+                        url: window.location.href
+                      });
+                    }
+                  }}
+                >
+                  Share
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </div>

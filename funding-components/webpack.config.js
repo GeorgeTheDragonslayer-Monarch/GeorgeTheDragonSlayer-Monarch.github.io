@@ -5,26 +5,19 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'funding-components.js',
-    library: 'FundingComponents',
+    library: 'DreamsUnchartedFunding',
     libraryTarget: 'umd',
     globalObject: 'this'
   },
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: [
-              ['@babel/preset-env', {
-                targets: {
-                  browsers: ['> 1%', 'last 2 versions']
-                }
-              }],
-              '@babel/preset-react'
-            ]
+            presets: ['@babel/preset-env', '@babel/preset-react']
           }
         }
       },
@@ -35,7 +28,14 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+      '@components': path.resolve(__dirname, 'src/components'),
+      '@utils': path.resolve(__dirname, 'src/utils'),
+      '@services': path.resolve(__dirname, 'src/services'),
+      '@hooks': path.resolve(__dirname, 'src/hooks')
+    }
   },
   externals: {
     react: {
@@ -51,15 +51,6 @@ module.exports = {
       root: 'ReactDOM'
     }
   },
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
-    compress: true,
-    port: 3002,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    }
-  }
+  mode: 'production'
 };
 

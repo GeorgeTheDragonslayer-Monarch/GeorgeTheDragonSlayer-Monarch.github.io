@@ -1,153 +1,163 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { formatCurrency } from '@utils/formatCurrency';
 import ProgressBar from './ProgressBar';
-import { formatCurrency } from '../../utils/formatCurrency';
-import './FundingGoalCard.css';
+import DonationModal from './DonationModal';
 
-const FundingGoalCard = ({ goal, showCreator = true }) => {
-  const progressPercentage = (goal.currentAmount / goal.targetAmount) * 100;
-  const timeRemaining = goal.deadline ? getTimeRemaining(goal.deadline) : null;
-  
-  return (
-    <div className="funding-goal-card">
-      <div className="goal-header">
-        {goal.contentId?.featuredImage && (
-          <div className="goal-image">
-            <img 
-              src={goal.contentId.featuredImage} 
-              alt={goal.title}
-              loading="lazy"
-            />
-          </div>
-        )}
-        
-        <div className="goal-content">
-          <div className="goal-meta">
-            <span className={`goal-type ${goal.fundingType}`}>
-              {goal.fundingType.replace('-', ' ')}
-            </span>
-            <span className={`goal-status ${goal.status}`}>
-              {goal.status}
-            </span>
-          </div>
-          
-          <h3 className="goal-title">
-            <Link to={`/funding/goals/${goal._id}`}>
-              {goal.title}
-            </Link>
-          </h3>
-          
-          <p className="goal-description">
-            {goal.description.length > 120 
-              ? `${goal.description.substring(0, 120)}...`
-              : goal.description
-            }
-          </p>
-          
-          {showCreator && goal.creator && (
-            <div className="goal-creator">
-              <img 
-                src={goal.creator.avatar || '/default-avatar.png'} 
-                alt={goal.creator.name}
-                className="creator-avatar"
-              />
-              <span className="creator-name">
-                by {goal.creator.name}
-              </span>
-            </div>
-          )}
+const FundingGoalCard = ({ goal, showDonateButton = true, compact = false }) => {
+  const [showDonationModal, setShowDonationModal] = useState(false);
+
+  const progressPercentage = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
+  const isCompleted = goal.status === 'completed' || progressPercentage >= 100;
+  const daysLeft = goal.deadline ? Math.max(0, Math.ceil((new Date(goal.deadline) - new Date()) / (1000 * 60 * 60 * 24))) : null;
+
+  const handleDonateClick = () => {
+    setShowDonationModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowDonationModal(false);
+  };
+
+  if (compact) {
+    return (
+      <div className="funding-goal-card compact">
+        <div className="goal-header">
+          <h4>{goal.title}</h4>
+          <span className={`goal-status ${goal.status}`}>
+            {goal.status.charAt(0).toUpperCase() + goal.status.slice(1)}
+          </span>
         </div>
-      </div>
-      
-      <div className="goal-progress">
         <ProgressBar 
           current={goal.currentAmount} 
           target={goal.targetAmount}
           showPercentage={true}
         />
-        
-        <div className="progress-stats">
-          <div className="funding-amounts">
-            <span className="current-amount">
-              {formatCurrency(goal.currentAmount)}
-            </span>
-            <span className="target-amount">
-              of {formatCurrency(goal.targetAmount)} goal
-            </span>
+        <div className="goal-summary">
+          {formatCurrency(goal.currentAmount)} of {formatCurrency(goal.targetAmount)}
+          {!isCompleted && showDonateButton && (
+            <button 
+              className="btn btn-primary btn-small"
+              onClick={handleDonateClick}
+            >
+              Support
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="funding-goal-card">
+        <div className="goal-header">
+          <div>
+            <h4>{goal.title}</h4>
+            <p className="goal-type">{goal.fundingType.replace('-', ' ')}</p>
           </div>
-          
-          <div className="funding-meta">
-            <span className="completion-percentage">
-              {Math.round(progressPercentage)}% funded
+          <div className="goal-meta">
+            <span className={`goal-status ${goal.status}`}>
+              {goal.status.charAt(0).toUpperCase() + goal.status.slice(1)}
             </span>
-            {goal.stats?.totalDonations > 0 && (
-              <span className="donor-count">
-                {goal.stats.totalDonations} donation{goal.stats.totalDonations !== 1 ? 's' : ''}
-              </span>
+            {daysLeft !== null && daysLeft > 0 && (
+              <span className="days-left">{daysLeft} days left</span>
             )}
           </div>
         </div>
-        
-        {timeRemaining && !timeRemaining.expired && (
-          <div className="time-remaining">
-            <span className="time-label">Time remaining:</span>
-            <span className="time-value">
-              {timeRemaining.days > 0 && `${timeRemaining.days}d `}
-              {timeRemaining.hours > 0 && `${timeRemaining.hours}h `}
-              {timeRemaining.minutes}m
+
+        {goal.description && (
+          <p className="goal-description">{goal.description}</p>
+        )}
+
+        <div className="goal-progress">
+          <ProgressBar 
+            current={goal.currentAmount} 
+            target={goal.targetAmount}
+            showPercentage={true}
+          />
+          <div className="progress-details">
+            <span className="amount-raised">
+              {formatCurrency(goal.currentAmount)} raised
+            </span>
+            <span className="amount-target">
+              of {formatCurrency(goal.targetAmount)} goal
             </span>
           </div>
+          {goal.stats && (
+            <div className="goal-stats">
+              <span>{goal.stats.totalDonations || 0} supporters</span>
+              {goal.stats.averageDonation && (
+                <span>Avg: {formatCurrency(goal.stats.averageDonation)}</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {goal.rewardTiers && goal.rewardTiers.length > 0 && (
+          <div className="reward-preview">
+            <h5>Rewards Available</h5>
+            <div className="reward-tiers-preview">
+              {goal.rewardTiers.slice(0, 3).map((tier, index) => (
+                <div key={index} className="reward-tier-preview">
+                  <span className="tier-amount">{formatCurrency(tier.amount)}</span>
+                  <span className="tier-title">{tier.title}</span>
+                </div>
+              ))}
+              {goal.rewardTiers.length > 3 && (
+                <span className="more-rewards">+{goal.rewardTiers.length - 3} more</span>
+              )}
+            </div>
+          </div>
         )}
-        
-        {timeRemaining?.expired && (
-          <div className="time-expired">
-            Campaign ended
+
+        {!isCompleted && showDonateButton && (
+          <div className="goal-actions">
+            <button 
+              className="btn btn-primary btn-large"
+              onClick={handleDonateClick}
+            >
+              Support This Goal
+            </button>
+            <div className="goal-share">
+              <button 
+                className="btn btn-secondary"
+                onClick={() => {
+                  if (navigator.share) {
+                    navigator.share({
+                      title: goal.title,
+                      text: `Help support: ${goal.title}`,
+                      url: window.location.href
+                    });
+                  } else {
+                    navigator.clipboard.writeText(window.location.href);
+                    alert('Link copied to clipboard!');
+                  }
+                }}
+              >
+                Share
+              </button>
+            </div>
+          </div>
+        )}
+
+        {isCompleted && (
+          <div className="goal-completed">
+            <div className="completion-message">
+              <h5>🎉 Goal Completed!</h5>
+              <p>Thank you to all {goal.stats?.totalDonations || 0} supporters who made this possible!</p>
+            </div>
           </div>
         )}
       </div>
-      
-      <div className="goal-actions">
-        <Link 
-          to={`/funding/goals/${goal._id}`}
-          className="btn btn-primary"
-        >
-          {goal.status === 'completed' ? 'View Details' : 'Support This Goal'}
-        </Link>
-        
-        {goal.seriesId && (
-          <Link 
-            to={`/series/${goal.seriesId.slug}`}
-            className="btn btn-secondary"
-          >
-            View Series
-          </Link>
-        )}
-      </div>
-      
-      {goal.rewardTiers && goal.rewardTiers.length > 0 && (
-        <div className="reward-preview">
-          <span className="reward-label">Rewards starting at:</span>
-          <span className="reward-amount">
-            {formatCurrency(Math.min(...goal.rewardTiers.map(tier => tier.amount)))}
-          </span>
-        </div>
-      )}
-    </div>
-  );
-};
 
-// Helper function to calculate time remaining
-const getTimeRemaining = (deadline) => {
-  const now = new Date();
-  const timeLeft = new Date(deadline) - now;
-  
-  if (timeLeft <= 0) return { expired: true };
-  
-  const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-  
-  return { days, hours, minutes, expired: false };
+      {showDonationModal && (
+        <DonationModal
+          goal={goal}
+          onClose={handleCloseModal}
+        />
+      )}
+    </>
+  );
 };
 
 export default FundingGoalCard;

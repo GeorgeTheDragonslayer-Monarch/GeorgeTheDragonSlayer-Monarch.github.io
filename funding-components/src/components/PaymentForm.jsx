@@ -1,63 +1,41 @@
 import React, { useState } from 'react';
-import {
-  useStripe,
-  useElements,
-  CardElement,
-  CardNumberElement,
-  CardExpiryElement,
-  CardCvcElement
-} from '@stripe/react-stripe-js';
-import { formatCurrency } from '../../utils/formatCurrency';
-import './PaymentForm.css';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
+import { formatCurrency } from '@utils/formatCurrency';
 
-const PaymentForm = ({
-  fundingGoal,
-  amount,
-  donorInfo,
-  selectedReward,
-  onSuccess,
-  onBack
+const CARD_ELEMENT_OPTIONS = {
+  style: {
+    base: {
+      color: '#ffffff',
+      fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      backgroundColor: '#16213e',
+      '::placeholder': {
+        color: '#b0b0b0',
+      },
+    },
+    invalid: {
+      color: '#f44336',
+      iconColor: '#f44336',
+    },
+  },
+  hidePostalCode: false,
+};
+
+const PaymentForm = ({ 
+  amount, 
+  goalId, 
+  donorInfo, 
+  selectedTier, 
+  onSuccess, 
+  onError, 
+  isProcessing, 
+  setIsProcessing 
 }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState(null);
-  const [paymentMethod, setPaymentMethod] = useState('card');
-
-  const cardElementOptions = {
-    style: {
-      base: {
-        fontSize: '16px',
-        color: '#424770',
-        '::placeholder': {
-          color: '#aab7c4',
-        },
-        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-        fontSmoothing: 'antialiased',
-      },
-      invalid: {
-        color: '#9e2146',
-      },
-    },
-    hidePostalCode: true,
-  };
-
-  const splitCardElementOptions = {
-    style: {
-      base: {
-        fontSize: '16px',
-        color: '#424770',
-        '::placeholder': {
-          color: '#aab7c4',
-        },
-        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-        fontSmoothing: 'antialiased',
-      },
-      invalid: {
-        color: '#9e2146',
-      },
-    },
-  };
+  const [paymentMethod, setPaymentMethod] = useState('stripe');
+  const [cardError, setCardError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -67,7 +45,17 @@ const PaymentForm = ({
     }
 
     setIsProcessing(true);
-    setError(null);
+    setCardError(null);
+
+    if (paymentMethod === 'stripe') {
+      await handleStripePayment();
+    } else if (paymentMethod === 'paypal') {
+      await handlePayPalPayment();
+    }
+  };
+
+  const handleStripePayment = async () => {
+    const cardElement = elements.getElement(CardElement);
 
     try {
       // Create payment intent
@@ -77,224 +65,208 @@ const PaymentForm = ({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          fundingGoalId: fundingGoal._id,
-          amount: amount,
-          currency: 'usd',
-          donorName: donorInfo.name,
-          donorEmail: donorInfo.email,
-          message: donorInfo.message,
-          isAnonymous: donorInfo.isAnonymous,
-          rewardTier: selectedReward
+          amount: Math.round(amount * 100), // Convert to cents
+          goalId,
+          donorInfo,
+          selectedTier,
         }),
       });
 
-      const { success, data, message } = await response.json();
+      const { clientSecret, error } = await response.json();
 
-      if (!success) {
-        throw new Error(message || 'Failed to create payment intent');
-      }
-
-      const { clientSecret } = data;
-
-      // Get card element
-      const cardElement = paymentMethod === 'card' 
-        ? elements.getElement(CardElement)
-        : elements.getElement(CardNumberElement);
-
-      if (!cardElement) {
-        throw new Error('Card element not found');
+      if (error) {
+        throw new Error(error);
       }
 
       // Confirm payment
-      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: donorInfo.name,
-              email: donorInfo.email,
-            },
+      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+          billing_details: {
+            name: donorInfo.name,
+            email: donorInfo.email,
           },
-        }
-      );
+        },
+      });
 
       if (stripeError) {
         throw new Error(stripeError.message);
       }
 
       if (paymentIntent.status === 'succeeded') {
-        onSuccess();
-      } else {
-        throw new Error('Payment was not successful');
+        onSuccess({
+          paymentId: paymentIntent.id,
+          amount: amount,
+          method: 'stripe',
+        });
+      }
+    } catch (error) {
+      console.error('Stripe payment error:', error);
+      setCardError(error.message);
+      onError(error);
+    }
+  };
+
+  const handlePayPalPayment = async () => {
+    try {
+      // Create PayPal payment
+      const response = await fetch('/api/payments/paypal/create-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount,
+          goalId,
+          donorInfo,
+          selectedTier,
+        }),
+      });
+
+      const { approvalUrl, paymentId, error } = await response.json();
+
+      if (error) {
+        throw new Error(error);
       }
 
-    } catch (err) {
-      console.error('Payment error:', err);
-      setError(err.message || 'An error occurred while processing your payment');
-    } finally {
-      setIsProcessing(false);
+      // Redirect to PayPal
+      window.location.href = approvalUrl;
+    } catch (error) {
+      console.error('PayPal payment error:', error);
+      onError(error);
+    }
+  };
+
+  const handleCardChange = (event) => {
+    if (event.error) {
+      setCardError(event.error.message);
+    } else {
+      setCardError(null);
     }
   };
 
   return (
-    <div className="payment-form">
-      <div className="payment-header">
-        <button className="back-btn" onClick={onBack}>
-          ← Back
-        </button>
-        <h3>Complete Your Donation</h3>
-      </div>
-
-      {/* Order Summary */}
-      <div className="order-summary">
-        <div className="summary-item">
-          <span>Donation to: {fundingGoal.title}</span>
-          <span>{formatCurrency(amount)}</span>
-        </div>
-        
-        {selectedReward && (
-          <div className="summary-item reward">
-            <span>Reward: {selectedReward.title}</span>
-            <span>Included</span>
-          </div>
-        )}
-        
-        <div className="summary-total">
-          <span>Total</span>
-          <span>{formatCurrency(amount)}</span>
-        </div>
-      </div>
-
-      {/* Payment Method Toggle */}
-      <div className="payment-method-toggle">
-        <button
-          type="button"
-          className={`method-btn ${paymentMethod === 'card' ? 'active' : ''}`}
-          onClick={() => setPaymentMethod('card')}
-        >
-          Single Card Element
-        </button>
-        <button
-          type="button"
-          className={`method-btn ${paymentMethod === 'split' ? 'active' : ''}`}
-          onClick={() => setPaymentMethod('split')}
-        >
-          Split Card Elements
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="stripe-form">
-        {/* Donor Information Display */}
-        <div className="donor-summary">
-          <h4>Donor Information</h4>
-          <p><strong>Name:</strong> {donorInfo.name}</p>
-          <p><strong>Email:</strong> {donorInfo.email}</p>
-          {donorInfo.message && (
-            <p><strong>Message:</strong> {donorInfo.message}</p>
-          )}
-          {donorInfo.isAnonymous && (
-            <p className="anonymous-note">This donation will be anonymous</p>
-          )}
-        </div>
-
-        {/* Card Information */}
-        <div className="card-section">
-          <h4>Payment Information</h4>
-          
-          {paymentMethod === 'card' ? (
-            <div className="form-group">
-              <label htmlFor="card-element">Card details</label>
-              <div className="card-element-container">
-                <CardElement
-                  id="card-element"
-                  options={cardElementOptions}
-                />
-              </div>
+    <form onSubmit={handleSubmit} className="payment-form">
+      <div className="payment-methods">
+        <h4>Payment Method</h4>
+        <div className="payment-method-options">
+          <label className={`payment-method-option ${paymentMethod === 'stripe' ? 'selected' : ''}`}>
+            <input
+              type="radio"
+              value="stripe"
+              checked={paymentMethod === 'stripe'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            <div className="payment-method-info">
+              <span className="payment-method-name">Credit/Debit Card</span>
+              <span className="payment-method-description">Visa, Mastercard, American Express</span>
             </div>
-          ) : (
-            <>
-              <div className="form-group">
-                <label htmlFor="card-number">Card number</label>
-                <div className="card-element-container">
-                  <CardNumberElement
-                    id="card-number"
-                    options={splitCardElementOptions}
-                  />
-                </div>
-              </div>
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="card-expiry">Expiry date</label>
-                  <div className="card-element-container">
-                    <CardExpiryElement
-                      id="card-expiry"
-                      options={splitCardElementOptions}
-                    />
-                  </div>
-                </div>
-                
-                <div className="form-group">
-                  <label htmlFor="card-cvc">CVC</label>
-                  <div className="card-element-container">
-                    <CardCvcElement
-                      id="card-cvc"
-                      options={splitCardElementOptions}
-                    />
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-        </div>
+            <div className="payment-method-logos">
+              💳
+            </div>
+          </label>
 
-        {/* Error Display */}
-        {error && (
-          <div className="error-message">
-            {error}
+          <label className={`payment-method-option ${paymentMethod === 'paypal' ? 'selected' : ''}`}>
+            <input
+              type="radio"
+              value="paypal"
+              checked={paymentMethod === 'paypal'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+            />
+            <div className="payment-method-info">
+              <span className="payment-method-name">PayPal</span>
+              <span className="payment-method-description">Pay with your PayPal account</span>
+            </div>
+            <div className="payment-method-logos">
+              🅿️
+            </div>
+          </label>
+        </div>
+      </div>
+
+      {paymentMethod === 'stripe' && (
+        <div className="stripe-payment">
+          <div className="form-group">
+            <label>Card Information</label>
+            <div className="card-element-container">
+              <CardElement
+                options={CARD_ELEMENT_OPTIONS}
+                onChange={handleCardChange}
+              />
+            </div>
+            {cardError && (
+              <div className="card-error">{cardError}</div>
+            )}
+          </div>
+
+          <div className="security-info">
+            <div className="security-badges">
+              <span className="security-badge">🔒 SSL Secured</span>
+              <span className="security-badge">🛡️ PCI Compliant</span>
+            </div>
+            <p className="security-text">
+              Your payment information is encrypted and secure. We never store your card details.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {paymentMethod === 'paypal' && (
+        <div className="paypal-payment">
+          <div className="paypal-info">
+            <p>You will be redirected to PayPal to complete your payment securely.</p>
+            <div className="paypal-benefits">
+              <span>✓ Buyer Protection</span>
+              <span>✓ Secure Payment</span>
+              <span>✓ No card details required</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="payment-summary">
+        <div className="summary-row">
+          <span>Donation Amount:</span>
+          <span>{formatCurrency(amount)}</span>
+        </div>
+        {selectedTier && (
+          <div className="summary-row">
+            <span>Reward Tier:</span>
+            <span>{selectedTier.title}</span>
           </div>
         )}
-
-        {/* Security Notice */}
-        <div className="security-notice">
-          <div className="security-icons">
-            🔒 <span>Secured by Stripe</span>
-          </div>
-          <p>Your payment information is encrypted and secure. We never store your card details.</p>
+        <div className="summary-row total">
+          <span>Total:</span>
+          <span>{formatCurrency(amount)}</span>
         </div>
+        <div className="processing-fee-note">
+          <small>Processing fees are covered by Dreams Uncharted</small>
+        </div>
+      </div>
 
-        {/* Submit Button */}
-        <button
-          type="submit"
-          className="btn btn-primary btn-large"
-          disabled={!stripe || isProcessing}
-        >
-          {isProcessing ? (
-            <>
-              <span className="spinner"></span>
-              Processing...
-            </>
-          ) : (
-            `Donate ${formatCurrency(amount)}`
-          )}
-        </button>
-      </form>
+      <button
+        type="submit"
+        className="btn btn-primary btn-large payment-submit"
+        disabled={!stripe || isProcessing}
+      >
+        {isProcessing ? (
+          <span>
+            <span className="spinner"></span>
+            Processing...
+          </span>
+        ) : (
+          `Donate ${formatCurrency(amount)}`
+        )}
+      </button>
 
-      {/* Terms */}
-      <div className="payment-terms">
-        <p>
+      <div className="payment-footer">
+        <p className="terms-text">
           By completing this donation, you agree to our{' '}
-          <a href="/terms" target="_blank" rel="noopener noreferrer">
-            Terms of Service
-          </a>{' '}
-          and{' '}
-          <a href="/privacy" target="_blank" rel="noopener noreferrer">
-            Privacy Policy
-          </a>.
+          <a href="/terms" target="_blank">Terms of Service</a> and{' '}
+          <a href="/privacy" target="_blank">Privacy Policy</a>.
         </p>
       </div>
-    </div>
+    </form>
   );
 };
 
