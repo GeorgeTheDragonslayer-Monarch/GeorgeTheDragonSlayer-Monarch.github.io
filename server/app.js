@@ -97,12 +97,16 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dreams-uncharted', {
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => console.error('MongoDB connection error:', err));
+  ssl: true,
+  tlsAllowInvalidCertificates: true,
+}).then(() => {
+  console.log('📊 Connected to MongoDB');
+}).catch((error) => {
+  console.error('❌ MongoDB connection error:', error);
+});
 
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
