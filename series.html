@@ -48,8 +48,9 @@
         <!-- Series Information Section -->
         <div class="container">
             <div class="series-info">
-                <h1 class="series-title">Mystic Chronicles</h1>
-                <p class="series-author">By <a href="creator.html">Author Name</a></p>
+                <h1 id="comic-title">{{COMIC_TITLE}}</h1>
+                <p class="author" id="comic-author">By {{COMIC_AUTHOR}}</p>
+				<img src="{{COMIC_COVER}}" alt="{{COMIC_TITLE}}" id="comic-cover">
                 
                 <div class="series-actions">
                     <button class="btn btn-subscribe">Subscribe</button>
@@ -184,7 +185,7 @@
             </div>
         </div>
     </footer>
-
-    <script src="assets/js/main.js"></script>
+	<script src="assets/js/comics-manager.js"></script>
+	<script src="assets/js/series-page.js"></script>
 </body>
 </html>

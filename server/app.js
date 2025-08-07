@@ -6,6 +6,8 @@ const MongoStore = require('connect-mongo');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const path = require('path');
+const driveService = require('./driveService');
+const driveRoutes = require('./routes/drive');
 require('dotenv').config();
 
 // Import models
@@ -25,7 +27,7 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:3002',
-    process.env.CLIENT_URL || 'http://localhost:3000'
+    process.env.CLIENT_URL || 'http://localhost:3000/auth/google'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -94,6 +96,60 @@ passport.deserializeUser(async (id, done) => {
   } catch (error) {
     done(error, null);
   }
+});
+
+// Add after passport initialization
+  passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: "/api/auth/google/callback",
+  passReqToCallback: true
+}, async (req, accessToken, refreshToken, profile, done) => {
+  try {
+    let user = await User.findOne({ googleId: profile.id });
+    
+    if (user) {
+      // Store tokens for Drive access
+      user.tokens = {
+        access_token: accessToken,
+        refresh_token: refreshToken
+      };
+      await user.save();
+      return done(null, user);
+    } else {
+      user = new User({
+        googleId: profile.id,
+        name: profile.displayName,
+        email: profile.emails[0].value,
+        avatar: profile.photos[0].value,
+        role: 'user',
+        tokens: {
+          access_token: accessToken,
+          refresh_token: refreshToken
+        }
+      });
+      
+      await user.save();
+      return done(null, user);
+    }
+  } catch (error) {
+    return done(error, null);
+  }
+}));
+
+// Add after other route registrations
+app.use('/api/drive', driveRoutes);
+
+// Add a new endpoint to check Drive connection
+app.get('/api/drive/status', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ connected: false, error: 'Not authenticated' });
+  }
+  
+  res.json({
+    connected: !!req.user.tokens,
+    folderId: process.env.GOOGLE_DRIVE_FOLDER_ID
+  });
 });
 
 // Database connection

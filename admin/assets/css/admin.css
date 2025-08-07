@@ -308,12 +308,12 @@ img {
   font-family: var(--font-body);
 }
 
-.btn-primary {
+.publish-btn {
   background-color: var(--accent-color) !important;
   color: var(--primary-color) !important;
 }
 
-.btn-primary:hover {
+.publish-btn:hover {
   background-color: #c9142a !important;
   color: var(--primary-color) !important;
 }
@@ -349,7 +349,7 @@ img {
 
 /* Button Styles */
 .btn,
-.btn-primary,
+.publish-btn,
 .btn-secondary,
 .btn-success,
 .btn-danger {
@@ -366,7 +366,7 @@ img {
 }
 
 .btn:hover,
-.btn-primary:hover,
+.publish-.btn,
 .btn-secondary:hover,
 .btn-success:hover,
 .btn-danger:hover {
@@ -926,7 +926,7 @@ select.form-control {
 
 /* Button Styles */
 .btn,
-.btn-primary,
+.publish-btn,
 .btn-secondary,
 .btn-success,
 .btn-danger {
@@ -943,7 +943,7 @@ select.form-control {
 }
 
 .btn:hover,
-.btn-primary:hover,
+.publish-btn:hover,
 .btn-secondary:hover,
 .btn-success:hover,
 .btn-danger:hover {

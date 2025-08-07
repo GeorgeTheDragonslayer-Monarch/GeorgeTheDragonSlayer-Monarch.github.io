@@ -8,6 +8,71 @@
     <link rel="stylesheet" href="assets/css/admin.css">
     <link rel="stylesheet" href="assets/css/editor.css">
     <!-- <script src="assets/js/auth.js"></script> -->
+    <style>
+        /* Additional styles for Google Drive connection */
+        .drive-connection {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+        }
+        
+        .drive-connection h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #343a40;
+        }
+        
+        #drive-status {
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        #drive-status.connected {
+            background-color: #e6f4ea;
+            color: #137333;
+            border: 1px solid #34a853;
+        }
+        
+        #drive-status.not-connected {
+            background-color: #fce8e6;
+            color: #a50e0e;
+            border: 1px solid #ea4335;
+        }
+        
+        #drive-status.error {
+            background-color: #fef7e0;
+            color: #ea8600;
+            border: 1px solid #fbbc04;
+        }
+        
+        #connect-drive {
+            padding: 8px 15px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        #connect-drive:hover {
+            background-color: #3367d6;
+        }
+        
+        #connect-drive .drive-icon {
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="white" d="M7.71,3.5L1.15,15L4.58,21L11.13,9.5M9.73,15L6.3,21H19.42L22.85,15M22.28,14L15.42,2H8.58L8.57,2L15.43,14H22.28Z"/></svg>');
+        }
+    </style>
 </head>
 <body>
     <div class="admin-layout">
@@ -38,7 +103,7 @@
                     <li class="sidebar-item">
                         <a href="editor.html" class="sidebar-link">
                             <span class="sidebar-icon">✏️</span>
-                            <span class="sidebar-text">Block Editor</span>
+                            <span class="sidebar-text">Comic Uploader</span>
                         </a>
                     <!--
                     </li>
@@ -102,7 +167,7 @@
                     <div class="editor-actions">
                         <button class="btn btn-secondary preview-btn">Preview</button>
                         <button class="btn btn-secondary save-draft-btn">Save Draft</button>
-                        <button class="btn btn-primary publish-btn">Publish</button>
+                        <button class="publish-btn">Publish</button>
                     </div>
                     <div class="user-info">
                         <img src="assets/images/admin-avatar.svg" alt="Admin User" class="user-avatar">
@@ -120,6 +185,14 @@
                         <div class="form-group">
                             <label class="form-label">Title</label>
                             <input type="text" class="form-control" id="content-title" placeholder="Enter title">
+                        </div>
+                        <div class="form-group">
+                            <label for="content-author">Author</label>
+                            <input type="text" class="form-control" id="content-author" required placeholder="Your name or pseudonym">
+                        </div>
+                        <div class="form-group">
+                            <label for="content-author">Content Description</label>
+                            <input type="text" class="form-control" id="content-description" required placeholder="Brief description of the content">
                         </div>
                         <div class="form-group">
                             <label class="form-label">Content Type</label>
@@ -227,9 +300,8 @@
                 </div>
             </div>
         </main>
-    </div>
-    
-    <script src="assets/js/admin.js"></script>
+    </div> 
+    <script src="../assets/js/comics-manager.js"></script>
     <script src="assets/js/comic-uploader.js"></script>
 </body>
 </html>

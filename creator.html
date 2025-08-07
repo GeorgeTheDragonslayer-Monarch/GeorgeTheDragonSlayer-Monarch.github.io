@@ -77,15 +77,13 @@
             <div class="profile-banner">
                 <img src="assets/images/profile-banner.jpg" alt="Profile Banner">
             </div>
-            
             <div class="profile-header">
                 <div class="profile-avatar">
                     <img src="assets/images/avatar-creator.jpg" alt="Creator Avatar">
                 </div>
                 <div class="profile-info">
                     <h1 class="profile-name">Author Name</h1>
-                    <p class="profile-bio">Comic artist and storyteller. Creating fantasy worlds and compelling characters since 2020.</p>
-                    
+                    <p class="profile-bio">Comic artist and storyteller. Creating fantasy worlds and compelling characters since 2020.</p>           
                     <div class="profile-actions">
                         <button class="btn btn-follow">Follow</button>
                         <button class="btn btn-message">Message</button>
@@ -103,72 +101,79 @@
                 </ul>
                 
                 <div class="tabs-content">
-                    <div id="comics" class="tab-panel active">
-                        <h2>My Comics</h2>
-                        <div class="content-grid">
-                            <div class="content-card">
-                                <div class="card-image">
-                                    <img src="assets/images/comic-1.jpg" alt="Mystic Chronicles">
-                                </div>
-                                <div class="card-info">
-                                    <h3>Mystic Chronicles</h3>
-                                    <p class="genre">Fantasy, Action</p>
-                                    <p class="status">Ongoing • 3 Chapters</p>
-                                    <a href="series.html" class="btn btn-read">Read</a>
-                                </div>
-                            </div>
-                            <div class="content-card">
-                                <div class="card-image">
-                                    <img src="assets/images/comic-2.jpg" alt="Space Explorers">
-                                </div>
-                                <div class="card-info">
-                                    <h3>Space Explorers</h3>
-                                    <p class="genre">Sci-Fi, Adventure</p>
-                                    <p class="status">Ongoing • 5 Chapters</p>
-                                    <a href="series.html" class="btn btn-read">Read</a>
-                                </div>
-                            </div>
-                            <div class="content-card">
-                                <div class="card-image">
-                                    <img src="assets/images/comic-3.jpg" alt="Urban Tales">
-                                </div>
-                                <div class="card-info">
-                                    <h3>Urban Tales</h3>
-                                    <p class="genre">Drama, Slice of Life</p>
-                                    <p class="status">Completed • 12 Chapters</p>
-                                    <a href="series.html" class="btn btn-read">Read</a>
-                                </div>
-                            </div>
-                        </div>
+				<!-- Replace static comics section -->
+				<div id="comics" class="tab-panel active">
+				<div class="creator-comics-header">
+				<h2>My Comics</h2>
+				<div class="comics-filters">
+			<select id="status-filter">
+                <option value="all">All Status</option>
+                <option value="Published">Published</option>
+                <option value="Draft">Draft</option>
+                <option value="Scheduled">Scheduled</option>
+            </select>
+            <select id="sort-filter">
+                <option value="updated">Recently Updated</option>
+                <option value="created">Newest First</option>
+                <option value="title">Title A-Z</option>
+                <option value="views">Most Popular</option>
+            </select>
+            <a href="admin/editor.html" class="btn btn-primary">+ New Comic</a>
+        </div>
+    </div>
+    
+    <div class="comics-stats" id="comics-stats"></div>
+    <div class="content-grid" id="creator-comics-grid"></div>
+    <div class="empty-state" id="empty-comics" style="display: none;">
+        <div class="empty-icon">📚</div>
+        <h3>No Comics Yet</h3>
+        <p>Start creating your first comic to see it here!</p>
+        <a href="admin/editor.html" class="btn btn-primary">Create Your First Comic</a>
+    </div>
+</div>
+    
+    <div class="comics-stats" id="comics-stats">
+        <!-- Dynamic stats will be inserted here -->
+    </div>
+    
+    <div class="content-grid" id="creator-comics-grid">
+        <!-- Dynamic content will be inserted here -->
+    </div>
+    
+    <div class="empty-state" id="empty-comics" style="display: none;">
+        <div class="empty-icon">📚</div>
+        <h3>No Comics Yet</h3>
+        <p>Start creating your first comic to see it here!</p>
+        <a href="admin/editor.html" class="btn btn-primary">Create Your First Comic</a>
+    </div>
+</div>         
+        <div id="novels" class="tab-panel">
+            <h2>My Novels</h2>
+            <div class="content-grid">
+                <div class="content-card">
+                    <div class="card-image">
+                        <img src="assets/images/novel-1.jpg" alt="The Last Kingdom">
                     </div>
-                    
-                    <div id="novels" class="tab-panel">
-                        <h2>My Novels</h2>
-                        <div class="content-grid">
-                            <div class="content-card">
-                                <div class="card-image">
-                                    <img src="assets/images/novel-1.jpg" alt="The Last Kingdom">
-                                </div>
-                                <div class="card-info">
-                                    <h3>The Last Kingdom</h3>
-                                    <p class="genre">Fantasy, Drama</p>
-                                    <p class="status">Ongoing • 7 Chapters</p>
-                                    <a href="series.html" class="btn btn-read">Read</a>
-                                </div>
-                            </div>
-                            <div class="content-card">
-                                <div class="card-image">
-                                    <img src="assets/images/novel-2.jpg" alt="Midnight Secrets">
-                                </div>
-                                <div class="card-info">
-                                    <h3>Midnight Secrets</h3>
-                                    <p class="genre">Mystery, Thriller</p>
-                                    <p class="status">Ongoing • 4 Chapters</p>
-                                    <a href="series.html" class="btn btn-read">Read</a>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="card-info">
+                        <h3>The Last Kingdom</h3>
+                        <p class="genre">Fantasy, Drama</p>
+                        <p class="status">Ongoing • 7 Chapters</p>
+                        <a href="series.html" class="btn btn-read">Read</a>
                     </div>
+                </div>
+                <div class="content-card">
+                    <div class="card-image">
+                        <img src="assets/images/novel-2.jpg" alt="Midnight Secrets">
+                    </div>
+                    <div class="card-info">
+                        <h3>Midnight Secrets</h3>
+                        <p class="genre">Mystery, Thriller</p>
+                        <p class="status">Ongoing • 4 Chapters</p>
+                        <a href="series.html" class="btn btn-read">Read</a>
+                    </div>
+                </div>
+            </div>
+        </div>
                     
                     <div id="about" class="tab-panel">
                         <h2>About Me</h2>
@@ -259,8 +264,8 @@
             </div>
         </div>
     </footer>
-
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/profile.js"></script>
+    <script src="assets/js/comics-manager.js"></script>
+    <script src="assets/js/creator-page.js"></script>
 </body>
 </html>
+

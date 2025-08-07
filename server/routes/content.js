@@ -1,47 +1,79 @@
-/**
- * Content Routes
- * Dreams Uncharted Platform
- */
-
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
-const contentController = require('../controllers/contentController');
+const { google } = require('googleapis');
+const auth = new google.auth.GoogleAuth({
+    keyFile: 'service-account-key.json',
+    scopes: ['https://www.googleapis.com/auth/drive'],
+});
 
-// Get all content (with pagination and filters)
-router.get('/', contentController.getAllContent);
+// Upload comic to Drive and save to DB
+router.post('/comics', async (req, res) => {
+    try {
+        const { title, author, pages } = req.body; // pages = array of base64 images
+        
+        // 1. Upload cover image
+        const coverUrl = await uploadToDrive(
+            pages[0], 
+            `${title}-cover.jpg`
+        );
+        
+        // 2. Upload pages
+        const pageUrls = [];
+        for (let i = 0; i < pages.length; i++) {
+            const url = await uploadToDrive(
+                pages[i],
+                `${title}-page-${i+1}.jpg`
+            );
+            pageUrls.push(url);
+        }
+        
+        // 3. Save to MongoDB
+        const comic = new Comic({
+            title,
+            author,
+            coverImageUrl: coverUrl,
+            pageUrls,
+            publishedAt: new Date()
+        });
+        
+        await comic.save();
+        
+        res.status(201).json(comic);
+    } catch (error) {
+        console.error('Publish error:', error);
+        res.status(500).json({ error: 'Failed to publish comic' });
+    }
+});
 
-// Get published content (for public viewing)
-router.get('/published', contentController.getPublishedContent);
-
-// Get content by ID
-router.get('/:id', contentController.getContentById);
-
-// Get content by slug
-router.get('/slug/:slug', contentController.getContentBySlug);
-
-// Create new content (requires authentication)
-router.post('/', auth, contentController.createContent);
-
-// Update content (requires authentication)
-router.put('/:id', auth, contentController.updateContent);
-
-// Delete content (requires authentication)
-router.delete('/:id', auth, contentController.deleteContent);
-
-// Update content status (publish, unpublish, etc.)
-router.patch('/:id/status', auth, contentController.updateContentStatus);
-
-// Get content by series
-router.get('/series/:seriesId', contentController.getContentBySeries);
-
-// Get content by author
-router.get('/author/:authorId', contentController.getContentByAuthor);
-
-// Increment view count
-router.post('/:id/view', contentController.incrementViewCount);
-
-// Like/unlike content
-router.post('/:id/like', auth, contentController.toggleLike);
-
-module.exports = router;
+// Upload helper function
+async function uploadToDrive(base64Data, fileName) {
+    const drive = google.drive({ version: 'v3', auth });
+    const buffer = Buffer.from(base64Data.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+    
+    const fileMetadata = {
+        name: fileName,
+        parents: [process.env.GOOGLE_DRIVE_FOLDER_ID]
+    };
+    
+    const media = {
+        mimeType: 'image/jpeg',
+        body: buffer
+    };
+    
+    const file = await drive.files.create({
+        resource: fileMetadata,
+        media: media,
+        fields: 'id'
+    });
+    
+    // Make public
+    await drive.permissions.create({
+        fileId: file.data.id,
+        requestBody: {
+            role: 'reader',
+            type: 'anyone'
+        }
+    });
+    
+    return `https://drive.google.com/uc?export=view&id=${file.data.id}`;
+}
